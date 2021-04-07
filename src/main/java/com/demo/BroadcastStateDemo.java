@@ -8,7 +8,6 @@ import org.apache.flink.api.common.state.BroadcastState;
 import org.apache.flink.api.common.state.MapStateDescriptor;
 import org.apache.flink.api.common.state.ReadOnlyBroadcastState;
 import org.apache.flink.api.common.typeinfo.Types;
-import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.tuple.Tuple5;
@@ -19,26 +18,33 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.BroadcastProcessFunction;
 import org.apache.flink.util.Collector;
-
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 public class BroadcastStateDemo {
+
     public static void main(String[] args) throws Exception {
+        Logger log = LoggerFactory.getLogger(BroadcastStateDemo.class);
+
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setRuntimeMode(RuntimeExecutionMode.AUTOMATIC);
         env.setParallelism(1);
 
         DataStreamSource<Tuple2<String, String>> randomDataStream = env.addSource(new RandomSource());
+
+        // 从mysql定时读取的小表数据
         DataStreamSource<Map<String, UserInfo>> mysqlDataStream = env.addSource(new MySQLSource());
 //        randomDataStream.print();
         mysqlDataStream.print();
 
-
+        // 定义状态描述器
         MapStateDescriptor<String, Tuple3<String, Integer, String>> descriptor = new MapStateDescriptor<>("info", Types.STRING, Types.TUPLE(Types.STRING, Types.INT, Types.STRING));
 
+        // 配置广播流
         BroadcastStream<Map<String, UserInfo>> broadcast = mysqlDataStream.broadcast(descriptor);
 
+        // 将事件流和广播流进行连接
         BroadcastConnectedStream<Tuple2<String, String>, Map<String, UserInfo>> connect = randomDataStream.connect(broadcast);
 
         SingleOutputStreamOperator<Tuple5<String, String, String, Integer, String>> result = connect.process(new BroadcastProcessFunction<Tuple2<String, String>, Map<String, UserInfo>, Tuple5<String, String, String, Integer, String>>() {
@@ -57,6 +63,10 @@ public class BroadcastStateDemo {
                     Integer age = broadcastValue.f1;
                     String nationality = broadcastValue.f2;
                     out.collect(Tuple5.of(value.f0, value.f1, userName, age, nationality));
+                } else {
+                    // 初始化第一次没有数据，会走else
+                    log.info("[First Init]");
+                    // out.collect(Tuple5.of("1", "2", "3", 4, "5"));
                 }
 
 
