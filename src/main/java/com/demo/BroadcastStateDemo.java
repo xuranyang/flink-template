@@ -20,6 +20,7 @@ import org.apache.flink.streaming.api.functions.co.BroadcastProcessFunction;
 import org.apache.flink.util.Collector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 public class BroadcastStateDemo {
@@ -63,10 +64,12 @@ public class BroadcastStateDemo {
                     Integer age = broadcastValue.f1;
                     String nationality = broadcastValue.f2;
                     out.collect(Tuple5.of(value.f0, value.f1, userName, age, nationality));
+                    log.info("[Success]");
                 } else {
-                    // 初始化第一次没有数据，会走else
-                    log.info("[First Init]");
-                    // out.collect(Tuple5.of("1", "2", "3", 4, "5"));
+                    // 初始化第一次广播流没有数据，会走else
+//                    [First Init]:(LGD,ame)
+                    log.info("[First Init]:{}",value);
+                    out.collect(Tuple5.of(value.f0, value.f1, null, null, null));
                 }
 
 
