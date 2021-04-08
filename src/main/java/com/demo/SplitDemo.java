@@ -11,6 +11,8 @@ import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
 /**
+ * Flink1.12 不再使用split 和 select
+ * 使用process 和 OutputTag
  * 根据奇偶性
  * 将数据流拆分成多条
  */
@@ -37,6 +39,9 @@ public class SplitDemo {
 
             }
         });
+
+//        System.out.println(oddTag);
+//        System.out.println(evenTag);
 
         DataStream<Integer> oddOutput = process.getSideOutput(oddTag);
         DataStream<Integer> evenOutput = process.getSideOutput(evenTag);
