@@ -1,4 +1,4 @@
-package com.demo;
+package com.state;
 
 import com.model.UserInfo;
 import com.source.MySQLSource;

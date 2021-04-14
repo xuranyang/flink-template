@@ -14,7 +14,8 @@ import java.io.Serializable;
 
 /**
  * 自定义分区方法，实现模拟数据倾斜
- * 使用rebalance等方法实现HashCode重分区
+ * 使用rebalance等方法实现重分区
+ * keyBy()会根据HashCode进行重分区
  */
 public class RebalanceDemo implements Serializable {
 
