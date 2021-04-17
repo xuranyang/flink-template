@@ -60,7 +60,7 @@ public class KeyedProcessFunctionDemo {
         public void processElement(UserPos value, Context ctx, Collector<Long> out) throws Exception {
 
 
-            // 获取当前的时间戳(13位,精确到毫秒),相对来说意义不大
+            // 获取当前的事件时间戳(13位,精确到毫秒),相对来说意义不大
             // 当前方法内,时间戳大小不会改变
             ctx.timestamp();
 

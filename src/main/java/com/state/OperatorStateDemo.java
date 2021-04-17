@@ -35,6 +35,9 @@ public class OperatorStateDemo {
         env.execute();
     }
 
+    /**
+     * 获取当前所有选手中,年龄最大的选手信息
+     */
     public static class UserDefineOperatorStateFunction extends RichMapFunction<String, String> implements CheckpointedFunction {
 
         private ListState<String> listState;
