@@ -116,6 +116,7 @@
             <version>${flink.version}</version>
         </dependency>
         <!-- blink执行计划,1.11+默认的-->
+        <!-- 如果两种执行计划都引入的话,1.11以后默认使用blink新版本,1.10及之前默认采用老版本-->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-planner-blink_${scala.version}</artifactId>
