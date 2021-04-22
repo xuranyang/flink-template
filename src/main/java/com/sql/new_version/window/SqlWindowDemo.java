@@ -8,7 +8,7 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor;
 import org.apache.flink.streaming.api.windowing.time.Time;
-import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.*;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 
@@ -99,6 +99,14 @@ public class SqlWindowDemo {
 
         tableEnv.toAppendStream(tumbleSqlQuery, Row.class).print("tumbleWindow");
 
+        /**
+         * 滑动窗口 Table API
+         */
+        Table tumbleTableAPI = table.window(Tumble.over("10.seconds").on("rt").as("tw"))
+                .groupBy("club,tw")
+                .select("club,tw.rowtime,tw.start,tw.end,count(1)");
+//        tableEnv.toAppendStream(tumbleTableAPI, Row.class).print("tumbleWindowTableAPI");
+
 
         /**
          * 滑动窗口
@@ -121,6 +129,14 @@ public class SqlWindowDemo {
 //        tableEnv.toAppendStream(slideSqlQuery, Row.class).print("slideWindow");
 
         /**
+         * 滑动窗口 Table API
+         */
+        Table slideTableAPI = table.window(Slide.over("5.seconds").every("2.seconds").on("rt").as("hw"))
+                .groupBy("hw")
+                .select("hw.rowtime,hw.start,hw.end,count(1)");
+//        tableEnv.toAppendStream(slideTableAPI, Row.class).print("slideWindowTableAPI");
+
+        /**
          * 会话窗口
          *
          * session_start
@@ -137,6 +153,14 @@ public class SqlWindowDemo {
                 "group by session(rt,interval '2' second)");
 
 //        tableEnv.toAppendStream(sessionSqlQuery, Row.class).print("sessionWindow");
+
+        /**
+         * 会话窗口 Table API
+         */
+        Table sessionTableAPI = table.window(Session.withGap("2.seconds").on("rt").as("sw"))
+                .groupBy("sw")
+                .select("sw.rowtime,sw.start,sw.end,count(1)");
+//        tableEnv.toAppendStream(sessionTableAPI, Row.class).print("sessionWindowTableAPI");
 
         /**
          * OVER窗口
@@ -162,6 +186,14 @@ public class SqlWindowDemo {
                 "window w as (partition by club order by rt rows between 1 preceding and current row)");
 
 //        tableEnv.toAppendStream(overSqlQuery2, Row.class).print("overWindow2");
+
+        /**
+         * OVER窗口 TableAPI
+         */
+        Table overTableAPI = table.window(Over.partitionBy("club").orderBy("rt").preceding("1.rows").as("ow"))
+                .select("club,rt,count(1) over ow,age.sum over ow");
+//        tableEnv.toAppendStream(overTableAPI, Row.class).print("overWindow2TableAPI");
+
 
         env.execute();
     }
