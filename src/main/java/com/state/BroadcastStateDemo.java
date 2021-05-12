@@ -23,6 +23,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+/**
+ * 可以参考
+ * https://ci.apache.org/projects/flink/flink-docs-master/zh/docs/dev/datastream/fault-tolerance/broadcast_state/
+ */
 public class BroadcastStateDemo {
 
     public static void main(String[] args) throws Exception {
