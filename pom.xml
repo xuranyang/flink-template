@@ -218,6 +218,13 @@
             <!--<version>5.1.38</version>-->
             <version>8.0.17</version>
         </dependency>
+        <!--Flink CDC-->
+        <dependency>
+            <groupId>com.alibaba.ververica</groupId>
+            <artifactId>flink-connector-mysql-cdc</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.bahir</groupId>
