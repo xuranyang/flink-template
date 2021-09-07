@@ -116,13 +116,13 @@ public class SqlStreamWindowJoinDemo {
                 " group by tumble(rt,interval '3' second),userId,userPos,ts) t2" +
                 " on t1.w1_start=t2.w2_start and t1.userId=t2.userId";
 
-        Table leftRsultTable = tableEnv.sqlQuery(leftTableQuery);
+        Table leftResultTable = tableEnv.sqlQuery(leftTableQuery);
         Table rightResultTable = tableEnv.sqlQuery(rightTableQuery);
         Table joinResultTable = tableEnv.sqlQuery(leftJoinTableQuery);
         Table windowJoinResultTable = tableEnv.sqlQuery(leftJoinWindowTableQuery);
 
 
-//        tableEnv.toAppendStream(leftRsultTable, Row.class).print("LeftResult");
+//        tableEnv.toAppendStream(leftResultTable, Row.class).print("LeftResult");
 //        tableEnv.toAppendStream(rightResultTable, Row.class).print("RightResult");
 
 //        tableEnv.toRetractStream(joinResultTable, Row.class).print("JoinResult");
