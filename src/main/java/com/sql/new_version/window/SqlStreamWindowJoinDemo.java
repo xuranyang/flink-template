@@ -4,6 +4,7 @@ import com.model.UserIdClubTs;
 import com.model.UserPosTs;
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.java.tuple.Tuple3;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -26,6 +27,9 @@ public class SqlStreamWindowJoinDemo {
 
         EnvironmentSettings newStreamSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env, newStreamSettings);
+
+        Configuration configuration = tableEnv.getConfig().getConfiguration();
+        configuration.setString("table.exec.state.ttl", "86400000");
 
         // nc -l -p 8888
         DataStreamSource<String> dataStreamSource1 = env.socketTextStream("localhost", 8888);
