@@ -74,13 +74,13 @@ public class SqlWindowDemo {
         tableEnv.createTemporaryView("rt_info",table);
 
         /**
-         * 滑动窗口
-         * tumble_start 相当于 滑动窗口的WindowStart     返回窗口的起始时间（包含边界）如[00:10,00:15)窗口，返回00:10。
-         * tumble_end 相当于 滑动窗口的WindowEnd         返回窗口的结束时间（包含边界）。例如[00:00, 00:15]窗口，返回00:15。
-         * tumble_rowtime 相当于 滑动窗口的WindowEnd     返回窗口的结束时间（不包含边界）。例如[00:00, 00:15]窗口，返回00:14:59.999。
+         * 滚动窗口
+         * tumble_start 相当于 滚动窗口的WindowStart     返回窗口的起始时间（包含边界）如[00:10,00:15)窗口，返回00:10。
+         * tumble_end 相当于 滚动窗口的WindowEnd         返回窗口的结束时间（包含边界）。例如[00:00, 00:15]窗口，返回00:15。
+         * tumble_rowtime 相当于 滚动窗口的WindowEnd     返回窗口的结束时间（不包含边界）。例如[00:00, 00:15)窗口，返回00:14:59.999。
          * 只有基于 EventTime 的Window上可以使用,否则会报错
          *
-         * tumble_proctime 相当于 滑动窗口的WindowEnd    返回窗口的结束时间（不包含边界）。例如[00:00, 00:15]窗口，返回00:14:59.999。
+         * tumble_proctime 相当于 滚动窗口的WindowEnd    返回窗口的结束时间（不包含边界）。例如[00:00, 00:15)窗口，返回00:14:59.999。
          * 只有基于 ProcessTime 的Window上可以使用, 否则 如果在EventTime的Window上使用显示为null
          */
 
