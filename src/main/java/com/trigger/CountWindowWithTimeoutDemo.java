@@ -36,13 +36,13 @@ public class CountWindowWithTimeoutDemo {
         // 窗口到达10秒 或者 窗口内数据达到3条 就触发此窗口
         dataStreamSource.timeWindowAll(Time.seconds(10)).trigger(new CountTriggerWithTimeout(3, TimeCharacteristic.ProcessingTime))
                 .apply(new AllWindowFunction<String, List<String>, TimeWindow>() {
-            @Override
-            public void apply(TimeWindow window, Iterable<String> values, Collector<List<String>> out) throws Exception {
+                    @Override
+                    public void apply(TimeWindow window, Iterable<String> values, Collector<List<String>> out) throws Exception {
 //                System.out.println(values);
-                List<String> valuesList = Lists.newArrayList(values.iterator());
-                out.collect(valuesList);
-            }
-        }).print();
+                        List<String> valuesList = Lists.newArrayList(values.iterator());
+                        out.collect(valuesList);
+                    }
+                }).print();
 
         env.execute();
     }
