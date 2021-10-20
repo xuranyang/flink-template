@@ -28,8 +28,8 @@ public class CountWindowWithTimeoutDemo {
         env.setParallelism(1);
         env.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime);
 
-        // nc -l -p 9999
-        DataStreamSource<String> dataStreamSource = env.socketTextStream("localhost", 9999);
+        // nc -l -p 8888
+        DataStreamSource<String> dataStreamSource = env.socketTextStream("localhost", 8888);
 
 //        dataStreamSource.print();
 
