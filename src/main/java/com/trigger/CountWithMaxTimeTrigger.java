@@ -29,7 +29,7 @@ public class CountWithMaxTimeTrigger<W extends Window> extends Trigger<Object, W
     private final ReducingStateDescriptor<Long> fireTimeStateDesc =
             new ReducingStateDescriptor<>("fire-time", new CountWithMaxTimeTrigger.Min(), LongSerializer.INSTANCE);
 
-    private CountWithMaxTimeTrigger(long maxCount, long maxWaitingTime) {
+    public CountWithMaxTimeTrigger(long maxCount, long maxWaitingTime) {
         this.maxCount = maxCount;
         this.maxWaitingTime = maxWaitingTime;
     }
