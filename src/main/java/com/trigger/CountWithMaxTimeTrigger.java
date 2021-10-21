@@ -89,6 +89,7 @@ public class CountWithMaxTimeTrigger<W extends Window> extends Trigger<Object, W
         ctx.getPartitionedState(stateDesc).clear();
     }
 
+    // canMerge()方法如果返回true,说明此触发器支持状态合并,必须实现onMerge()方法
     @Override
     public boolean canMerge() {
         return true;

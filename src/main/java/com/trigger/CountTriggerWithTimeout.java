@@ -39,6 +39,8 @@ public class CountTriggerWithTimeout<T> extends Trigger<T, TimeWindow> {
         return TriggerResult.FIRE_AND_PURGE;
     }
 
+    // 每个到达窗口的元素都要调用一次,判断是否需要结束窗口并往下游发送数据
+    // element 到达的元素,timestamp到达元素的时间戳,window要添加元素的窗口,ctx可用于注册计时器回调的上下文对象
     @Override
     public TriggerResult onElement(T element, long timestamp, TimeWindow window, TriggerContext ctx) throws Exception {
         ReducingState<Long> countState = ctx.getPartitionedState(countStateDescriptor);
@@ -56,6 +58,8 @@ public class CountTriggerWithTimeout<T> extends Trigger<T, TimeWindow> {
         }
     }
 
+    // 当使用触发器上下文设置的处理时间计时器触发时调用
+    // time计时器触发的时间戳,window定时器触发的窗口,ctx可用于注册计时器回调的上下文对象
     @Override
     public TriggerResult onProcessingTime(long time, TimeWindow window, TriggerContext ctx) throws Exception {
         if (timeType != TimeCharacteristic.ProcessingTime) {
@@ -69,6 +73,7 @@ public class CountTriggerWithTimeout<T> extends Trigger<T, TimeWindow> {
         }
     }
 
+    // 当使用触发器上下文设置的事件时间计时器触发时调用
     @Override
     public TriggerResult onEventTime(long time, TimeWindow window, TriggerContext ctx) throws Exception {
         if (timeType != TimeCharacteristic.EventTime) {
@@ -82,6 +87,7 @@ public class CountTriggerWithTimeout<T> extends Trigger<T, TimeWindow> {
         }
     }
 
+    // 清除触发器可能仍保持给定窗口的任何状态,当窗口被清除时调用
     @Override
     public void clear(TimeWindow window, TriggerContext ctx) throws Exception {
         ReducingState countState = ctx.getPartitionedState(countStateDescriptor);
