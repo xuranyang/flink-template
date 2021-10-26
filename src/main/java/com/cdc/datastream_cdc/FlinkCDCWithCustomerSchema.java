@@ -36,6 +36,7 @@ public class FlinkCDCWithCustomerSchema {
                 .databaseList("test_db")
                 .tableList("test_db.test_table")         //可选配置项,如果不指定该参数,则会读取上一个配置下的所有表的数据,注意：指定的时候需要使用"db.table"的方式
                 .debeziumProperties(properties)
+                .serverTimeZone("Asia/Shanghai")
                 .deserializer(new DebeziumDeserializationSchema<String>() { //自定义数据解析器
                     @Override
                     public void deserialize(SourceRecord sourceRecord, Collector<String> collector) throws Exception {
