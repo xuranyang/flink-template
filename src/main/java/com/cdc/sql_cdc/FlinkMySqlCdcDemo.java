@@ -14,10 +14,10 @@ import org.apache.flink.types.Row;
  * use flink_cdc_test;
  *
  * CREATE TABLE `cdc_source_table` (
- * `id` bigint NOT NULL AUTO_INCREMENT,
- * `name` varchar(255) DEFAULT NULL,
- * `age` int DEFAULT NULL,
- * PRIMARY KEY (`id`)
+ *   `id` bigint NOT NULL AUTO_INCREMENT,
+ *   `name` varchar(255) DEFAULT NULL,
+ *   `age` int DEFAULT NULL,
+ *   PRIMARY KEY (`id`)
  * ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
  *
  * CREATE TABLE cdc_target_table LIKE cdc_source_table;
