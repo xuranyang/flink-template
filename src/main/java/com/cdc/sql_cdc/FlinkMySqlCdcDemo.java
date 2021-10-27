@@ -10,16 +10,16 @@ import org.apache.flink.types.Row;
 
 /**
  * sql-cdc 只适合单库或者单表,无法获取多表的binlog
- * <p>
+ *
  * use flink_cdc_test;
- * <p>
+ *
  * CREATE TABLE `cdc_source_table` (
  * `id` bigint NOT NULL AUTO_INCREMENT,
  * `name` varchar(255) DEFAULT NULL,
  * `age` int DEFAULT NULL,
  * PRIMARY KEY (`id`)
  * ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
- * <p>
+ *
  * CREATE TABLE cdc_target_table LIKE cdc_source_table;
  */
 public class FlinkMySqlCdcDemo {
