@@ -21,7 +21,7 @@ import org.apache.flink.streaming.api.windowing.time.Time;
  * .window(<WindowAssigner>)
  * .apply(<JoinFunction>)
  */
-public class WindowJoinDemo {
+public class WindowInnerJoinDemo {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setRuntimeMode(RuntimeExecutionMode.STREAMING);
@@ -47,7 +47,10 @@ public class WindowJoinDemo {
             }
         });
 
-        DataStream<UserJoinRight> dataStreamRight = env.readTextFile("src/main/java/com/data/join_data2.txt").map(line -> {
+        String filePath="src/main/java/com/data/join_data2.txt";
+//        String filePath="src/main/java/com/data/join_data4.txt";
+
+        DataStream<UserJoinRight> dataStreamRight = env.readTextFile(filePath).map(line -> {
             String[] fields = line.split(",");
             String userId = fields[0];
             String position = fields[1];
@@ -62,7 +65,7 @@ public class WindowJoinDemo {
         });
 
         /**
-         * 双流join
+         * 双流inner join
          */
         dataStreamLeft.join(dataStreamRight)
                 .where(new KeySelector<UserJoinLeft, String>() {
