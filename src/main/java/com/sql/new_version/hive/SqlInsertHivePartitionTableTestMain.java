@@ -7,6 +7,8 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.catalog.hive.HiveCatalog;
 
 /**
+ * https://blog.csdn.net/m0_37592814/article/details/108296458
+ * https://blog.csdn.net/m0_37592814/article/details/108044830
  * 用FlinkSQL写入Hive的分区表（非分区表没有该问题）时会出现元数据metastore缺失问题,导致数据已经成功写入Hive表对应的HDFS路径,但是却无法查询到数据
  * 需要 add partition 或者 msck repair table修复元数据之后,才能查询到
  * 这里使用的是流模式,每隔一个checkpoint时间就会往hive表中commit一次数据
