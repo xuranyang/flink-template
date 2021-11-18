@@ -6,6 +6,7 @@ import org.apache.flink.table.api.SqlDialect;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
 /**
+ * 0.9.0的代码没有兼容windows
  * 目前windows系统写入Hudi,路径会存在反斜杠问题
  * Not in marker dir. Marker Path
  */
