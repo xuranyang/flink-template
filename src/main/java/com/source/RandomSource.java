@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class RandomSource extends RichSourceFunction<Tuple2<String, String>> {
     private boolean isRunning = true;
@@ -27,7 +28,8 @@ public class RandomSource extends RichSourceFunction<Tuple2<String, String>> {
         while (isRunning){
             int index = random.nextInt(randomInfo.size());
             ctx.collect(randomInfo.get(index));
-            Thread.sleep(500);
+//            Thread.sleep(500);
+            TimeUnit.MILLISECONDS.sleep(500);
         }
     }
 
