@@ -70,7 +70,7 @@ public class TopNSqlDemo {
                 " where row_num <= 5 ");
 
 //        tableEnv.toRetractStream(resultTable, Row.class).print();
-        
+
         // 纯SQL实现
         tableEnv.createTemporaryView("data_table", dataStream, "userId,item,timestamp.rowtime as ts");
         Table resultSqlTable = tableEnv.sqlQuery("select * from " +
