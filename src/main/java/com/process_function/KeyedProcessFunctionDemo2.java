@@ -73,7 +73,7 @@ public class KeyedProcessFunctionDemo2 {
                 context.timerService().registerProcessingTimeTimer(ts);
                 timerTsState.update(ts);
             }
-            // 如果温度下降,且已经注册了定时器
+            // 如果apm下降,且已经注册了定时器
             else if (apm < lastApm && timerTs != null) {
                 context.timerService().deleteProcessingTimeTimer(timerTs);
                 timerTsState.clear();
