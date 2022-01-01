@@ -1,12 +1,9 @@
 package com.source;
 
-import com.sink.util.PropUtil;
-import com.source.util.UserDefineKafkaDeserializationSchema;
-import org.apache.flink.api.common.serialization.SimpleStringSchema;
+import com.source.utils.UserDefineKafkaDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
 import java.util.Properties;
 

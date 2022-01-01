@@ -1,7 +1,7 @@
 package com.source;
 
 import com.sink.util.PropUtil;
-import com.source.util.PartitionOffsetKafkaStringSchema;
+import com.source.utils.PartitionOffsetKafkaStringSchema;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;

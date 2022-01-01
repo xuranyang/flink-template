@@ -1,4 +1,4 @@
-package com.source.util;
+package com.source.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -6,14 +6,13 @@ import org.apache.flink.streaming.connectors.kafka.KafkaDeserializationSchema;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * 自定义
- * Flink KafkaSource 读取Kafka数据时,同时获取分区和位点信息
- */
-public class UserDefineKafkaDeserializationSchema implements KafkaDeserializationSchema<String> {
+public class PartitionOffsetKafkaStringSchema implements KafkaDeserializationSchema<String> {
 
-    public static final Charset UTF_8 = Charset.forName("UTF-8");
+    public static final Charset UTF_8 = StandardCharsets.UTF_8;
 
     @Override
     public boolean isEndOfStream(String s) {
@@ -22,18 +21,21 @@ public class UserDefineKafkaDeserializationSchema implements KafkaDeserializatio
 
     @Override
     public String deserialize(ConsumerRecord<byte[], byte[]> consumerRecord) throws Exception {
+        Map<String, String> kafkaConsumeMap = new HashMap<>();
+
         String value = new String(consumerRecord.value(), UTF_8.name());
         long offset = consumerRecord.offset();
         int partition = consumerRecord.partition();
-        JSONObject jsonObject = JSONObject.parseObject(value);
-        jsonObject.put("offset", offset);
-        jsonObject.put("partition", partition);
-        return jsonObject.toString();
+
+        kafkaConsumeMap.put("record", value);
+        kafkaConsumeMap.put("offset", String.valueOf(offset));
+        kafkaConsumeMap.put("partition", String.valueOf(partition));
+        return JSONObject.toJSONString(kafkaConsumeMap);
     }
 
     @Override
     public TypeInformation<String> getProducedType() {
-        return TypeInformation.of(String.class);
 //        return null;
+        return TypeInformation.of(String.class);
     }
 }
