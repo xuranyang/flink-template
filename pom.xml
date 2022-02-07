@@ -12,6 +12,7 @@
         <module>flink-template-cep</module>
         <module>flink-template-hudi</module>
         <module>flink-template-cdc</module>
+        <module>flink-template-sql</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -316,6 +317,11 @@
             <version>1.1.21</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.0.0</version>
+        </dependency>
     </dependencies>
 
 </project>
