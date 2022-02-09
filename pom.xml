@@ -101,6 +101,13 @@
             <version>${flink.version}</version>
         </dependency>
 
+        <!-- Flink Web UI -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-runtime-web_${scala.version}</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-clients_${scala.version}</artifactId>
@@ -322,6 +329,7 @@
             <artifactId>maven-assembly-plugin</artifactId>
             <version>3.0.0</version>
         </dependency>
+
     </dependencies>
 
 </project>
