@@ -13,6 +13,7 @@
         <module>flink-template-hudi</module>
         <module>flink-template-cdc</module>
         <module>flink-template-sql</module>
+        <module>flink-template-starrocks</module>
     </modules>
 
     <packaging>pom</packaging>
