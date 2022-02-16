@@ -19,8 +19,8 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  * a -> (a,3)
  * restart -> 报错重启
  * --
- * a -> checkpoint完成以后:(a,4) | checkpoint还未完成 或 不使用checkpoint:(a,1)
- * b -> checkpoint完成以后:(b,3) | checkpoint还未完成 或 不使用checkpoint:(b,1)
+ * a -> 最新数据的checkpoint完成以后:(a,4) | 不使用checkpoint:(a,1) | 最新数据的checkpoint还未完成,上一个checkpoint为(a,2)位置: (a,3)
+ * b -> 最新数据的checkpoint完成以后:(b,3) | 不使用checkpoint:(b,1) | 最新数据的checkpoint还未完成,上一个checkpoint为(a,2)位置: (b,2)
  */
 public class CheckpointRestartDemo {
     public static void main(String[] args) throws Exception {
