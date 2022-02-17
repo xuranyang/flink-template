@@ -6,6 +6,7 @@ import org.apache.flink.core.io.SimpleVersionedSerializer;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.sink.filesystem.BucketAssigner;
+import org.apache.flink.streaming.api.functions.sink.filesystem.OutputFileConfig;
 import org.apache.flink.streaming.api.functions.sink.filesystem.StreamingFileSink;
 import org.apache.flink.streaming.api.functions.sink.filesystem.bucketassigners.DateTimeBucketAssigner;
 import org.apache.flink.streaming.api.functions.sink.filesystem.bucketassigners.SimpleVersionedStringSerializer;
@@ -47,6 +48,7 @@ public class StreamingFileSinkDemo {
 
         StreamingFileSink<String> streamingFileSink = StreamingFileSink
                 .forRowFormat(new Path(path), new SimpleStringEncoder<String>("UTF-8"))
+                // 滚动策略
                 .withRollingPolicy(
                         DefaultRollingPolicy.create()
                                 // 滚动写入新文件的时间，默认60s。
@@ -56,8 +58,15 @@ public class StreamingFileSinkDemo {
                                 // 设置每个文件的最大大小 ,默认是128M
                                 .withMaxPartSize(1024 * 1024 * 1024)
                                 .build())
+                // 分桶策略
 //                .withBucketAssigner(bucketAssigner)
                 .withBucketAssigner(udfDtBucketAssigner)
+                .withOutputFileConfig(OutputFileConfig.builder()
+                        // 设置文件前缀
+                        .withPartPrefix("prefix")
+                        // 设置文件后缀
+                        .withPartSuffix(".end")
+                        .build())
                 .build();
 
         dataStreamSource.addSink(streamingFileSink);
