@@ -2,6 +2,7 @@ package com.example;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
 public class Kafka2StarRocksDemo {
@@ -12,7 +13,8 @@ public class Kafka2StarRocksDemo {
         env.setRuntimeMode(RuntimeExecutionMode.AUTOMATIC);
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
 
-        sqlStreamSink(tableEnv);
+//        sqlStreamSink(tableEnv);
+        sqlStreamMultiSink(tableEnv);
 
 //        env.execute();
     }
@@ -42,7 +44,7 @@ public class Kafka2StarRocksDemo {
                 " `timestamp` BIGINT\n" +
                 ") WITH (\n" +
                 " 'connector' = 'kafka',\n" +
-                " 'topic' = 'TEST_KAFKA_GROUP',\n" +
+                " 'topic' = 'TEST_KAFKA_TOPIC',\n" +
                 " 'properties.bootstrap.servers' = '127.0.0.1:9092',\n" +
                 " 'properties.group.id' = 'testGroup',\n" +
                 " 'format' = 'json',\n" +
@@ -85,5 +87,107 @@ public class Kafka2StarRocksDemo {
 
 //        tableEnv.executeSql("select id,age,`timestamp` from source_table").print();
         tableEnv.executeSql("insert into sink_table select id,age,`timestamp` from source_table");
+    }
+
+    public static void sqlStreamMultiSink(StreamTableEnvironment tableEnv) {
+        String sourceSql = "CREATE TABLE source_table (\n" +
+                " id STRING,\n" +
+                " age INT,\n" +
+                " ts BIGINT,\n" +
+                " `table` STRING,\n" +
+                " country STRING\n," +
+                " gender STRING\n" +
+                ") WITH (\n" +
+                " 'connector' = 'kafka',\n" +
+                " 'topic' = 'TEST_KAFKA_MULTI_TOPIC',\n" +
+                " 'properties.bootstrap.servers' = '127.0.0.1:9092',\n" +
+                " 'properties.group.id' = 'testGroup',\n" +
+                " 'format' = 'json',\n" +
+//                " 'scan.startup.mode' = 'earliest-offset'\n" +
+                " 'scan.startup.mode' = 'group-offsets'\n" +
+                ")";
+
+
+        /**
+         * StarRocks DDL:
+         * CREATE TABLE IF NOT EXISTS test.flink_test_table_a (
+         * 	 id VARCHAR(255) NOT NULL,
+         * 	 ts BIGINT NOT NULL,
+         * 	 age INT NOT NULL,
+         * 	 country VARCHAR(255) NOT NULL
+         * )
+         * DUPLICATE KEY(id,ts,age)
+         * DISTRIBUTED BY HASH(id) BUCKETS 8;
+         *
+         * CREATE TABLE IF NOT EXISTS test.flink_test_table_b (
+         * 	 id VARCHAR(255) NOT NULL,
+         * 	 ts BIGINT NOT NULL,
+         * 	 age INT NOT NULL,
+         * 	 gender VARCHAR(255) NOT NULL
+         * )
+         * DUPLICATE KEY(id,ts,age)
+         * DISTRIBUTED BY HASH(id) BUCKETS 8;
+         */
+        String sinkTableASql = "CREATE TABLE sink_table_a(" +
+                "id VARCHAR," +
+                "ts BIGINT," +
+                "age INT," +
+                "country VARCHAR" +
+                ") WITH ( " +
+                "'connector' = 'starrocks'," +
+                "'jdbc-url'='jdbc:mysql://127.0.0.1:9030?serverTimezone=Asia/Shanghai'," +
+                "'load-url'='127.0.0.1:8030'," +
+                "'database-name' = 'test'," +
+                "'table-name' = 'flink_test_table_a'," +
+                "'username' = 'root'," +
+                "'password' = '123456'," +
+                "'sink.buffer-flush.max-rows' = '1000000'," +
+                "'sink.buffer-flush.max-bytes' = '300000000'," +
+                "'sink.buffer-flush.interval-ms' = '5000'," +
+                "'sink.properties.column_separator' = '\\x01'," +
+                "'sink.properties.row_delimiter' = '\\x02'," +
+                "'sink.max-retries' = '3'," +
+                "'sink.properties.columns' = 'id,ts,age,country'" +
+                ")";
+
+        String sinkTableBSql = "CREATE TABLE sink_table_b(" +
+                "id VARCHAR," +
+                "ts BIGINT," +
+                "age INT," +
+                "gender VARCHAR" +
+                ") WITH ( " +
+                "'connector' = 'starrocks'," +
+                "'jdbc-url'='jdbc:mysql://127.0.0.1:9030?serverTimezone=Asia/Shanghai'," +
+                "'load-url'='127.0.0.1:8030'," +
+                "'database-name' = 'test'," +
+                "'table-name' = 'flink_test_table_b'," +
+                "'username' = 'root'," +
+                "'password' = '123456'," +
+                "'sink.buffer-flush.max-rows' = '1000000'," +
+                "'sink.buffer-flush.max-bytes' = '300000000'," +
+                "'sink.buffer-flush.interval-ms' = '5000'," +
+                "'sink.properties.column_separator' = '\\x01'," +
+                "'sink.properties.row_delimiter' = '\\x02'," +
+                "'sink.max-retries' = '3'," +
+                "'sink.properties.columns' = 'id,ts,age,gender'" +
+                ")";
+
+        tableEnv.executeSql(sourceSql);
+        tableEnv.executeSql(sinkTableASql);
+        tableEnv.executeSql(sinkTableBSql);
+
+        boolean useStatementSet = true;
+//        boolean useStatementSet = false;
+        if (useStatementSet) {
+            StatementSet statementSet = tableEnv.createStatementSet();
+            statementSet.addInsertSql("insert into sink_table_a select id,ts,age,country from source_table where `table`='table_a'");
+            statementSet.addInsertSql("insert into sink_table_b select id,ts,age,gender from source_table where `table`='table_b'");
+            statementSet.execute();
+        } else {
+//            tableEnv.executeSql("insert into sink_table_a select id,ts,age,country from source_table where country is not null");
+//            tableEnv.executeSql("insert into sink_table_b select id,ts,age,gender from source_table where gender is not null");
+            tableEnv.executeSql("insert into sink_table_a select id,ts,age,country from source_table where `table`='table_a'");
+            tableEnv.executeSql("insert into sink_table_b select id,ts,age,gender from source_table where `table`='table_b'");
+        }
     }
 }
