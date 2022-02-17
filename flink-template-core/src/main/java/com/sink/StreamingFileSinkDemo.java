@@ -32,8 +32,11 @@ public class StreamingFileSinkDemo {
                 .forRowFormat(new Path(path), new SimpleStringEncoder<String>("UTF-8"))
                 .withRollingPolicy(
                         DefaultRollingPolicy.create()
+                                // 滚动写入新文件的时间，默认60s。
                                 .withRolloverInterval(TimeUnit.MINUTES.toMillis(15))
+                                // 默认60s空闲，就滚动写入新的文件
                                 .withInactivityInterval(TimeUnit.MINUTES.toMillis(5))
+                                // 设置每个文件的最大大小 ,默认是128M
                                 .withMaxPartSize(1024 * 1024 * 1024)
                                 .build())
                 .withBucketAssigner(bucketAssigner)
