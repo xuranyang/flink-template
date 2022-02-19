@@ -20,8 +20,9 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <!--<scala.version>2.12</scala.version>-->
-        <scala.version>2.11</scala.version>
+        <!-- <scala.binary.version>2.12</scala.binary.version> -->
+        <scala.binary.version>2.11</scala.binary.version>
+        <scala.version>2.11.12</scala.version>
         <flink.version>1.12.0</flink.version>
 
         <hbase.cdh.version>2.1.0-cdh6.3.2</hbase.cdh.version>
@@ -61,7 +62,8 @@
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
-                <version>2.15.2</version>
+                <!-- <version>2.15.2</version> -->
+                <version>${scala.binary.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -70,6 +72,12 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <scalaVersion>${scala.version}</scalaVersion>
+                    <args>
+                        <arg>-target:jvm-1.8</arg>
+                    </args>
+                </configuration>
             </plugin>
 
         </plugins>
@@ -105,39 +113,39 @@
         <!-- Flink Web UI -->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-runtime-web_${scala.version}</artifactId>
+            <artifactId>flink-runtime-web_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-clients_${scala.version}</artifactId>
+            <artifactId>flink-clients_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-streaming-java_${scala.version}</artifactId>
+            <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-api-java-bridge_${scala.version}</artifactId>
+            <artifactId>flink-table-api-java-bridge_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
         <!-- flink执行计划,这是1.9版本之前的-->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-planner_${scala.version}</artifactId>
+            <artifactId>flink-table-planner_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <!-- blink执行计划,1.11+默认的-->
         <!-- 如果两种执行计划都引入的话,1.11以后默认使用blink新版本,1.10及之前默认采用老版本-->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-planner-blink_${scala.version}</artifactId>
+            <artifactId>flink-table-planner-blink_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
@@ -150,20 +158,20 @@
         <!-- flink连接器-->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-kafka_${scala.version}</artifactId>
+            <artifactId>flink-connector-kafka_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-sql-connector-kafka_${scala.version}</artifactId>
+            <artifactId>flink-sql-connector-kafka_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
         <!-- JDBC -->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-jdbc_${scala.version}</artifactId>
+            <artifactId>flink-connector-jdbc_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
@@ -189,21 +197,21 @@
 
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-hbase-2.2_${scala.version}</artifactId>
+            <artifactId>flink-connector-hbase-2.2_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
         <!--1.10 之前 Flink 写入HDFS-->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-filesystem_${scala.version}</artifactId>
+            <artifactId>flink-connector-filesystem_${scala.binary.version}</artifactId>
             <version>1.9.0</version>
         </dependency>
 
         <!-- hive -->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-hive_${scala.version}</artifactId>
+            <artifactId>flink-connector-hive_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
@@ -234,7 +242,7 @@
 
         <!--<dependency>-->
         <!--<groupId>org.apache.flink</groupId>-->
-        <!--<artifactId>flink-connector-filesystem_${scala.version}</artifactId>-->
+        <!--<artifactId>flink-connector-filesystem_${scala.binary.version}</artifactId>-->
         <!--<version>${flink.version}</version>-->
         <!--</dependency>-->
 
@@ -247,16 +255,16 @@
 
         <dependency>
             <groupId>org.apache.bahir</groupId>
-            <artifactId>flink-connector-redis_${scala.version}</artifactId>
+            <artifactId>flink-connector-redis_${scala.binary.version}</artifactId>
             <!--<version>1.1.5</version>-->
             <version>1.0</version>
             <exclusions>
                 <exclusion>
-                    <artifactId>flink-streaming-java_${scala.version}</artifactId>
+                    <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
                     <groupId>org.apache.flink</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>flink-runtime_${scala.version}</artifactId>
+                    <artifactId>flink-runtime_${scala.binary.version}</artifactId>
                     <groupId>org.apache.flink</groupId>
                 </exclusion>
                 <exclusion>

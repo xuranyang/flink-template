@@ -15,7 +15,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <flink.version>1.12.0</flink.version>
-        <flink.large.version>1.12</flink.large.version>
+        <flink.binary.version>1.12</flink.binary.version>
         <starrocks.version>1.1.16</starrocks.version>
     </properties>
 
@@ -25,17 +25,17 @@
         <dependency>
             <groupId>com.starrocks</groupId>
             <artifactId>flink-connector-starrocks</artifactId>
-            <version>${starrocks.version}_flink-${flink.large.version}_${scala.version}</version>
+            <version>${starrocks.version}_flink-${flink.binary.version}_${scala.binary.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-api-java-bridge_${scala.version}</artifactId>
+            <artifactId>flink-table-api-java-bridge_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-planner-blink_${scala.version}</artifactId>
+            <artifactId>flink-table-planner-blink_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
