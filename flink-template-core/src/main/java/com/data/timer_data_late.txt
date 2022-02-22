@@ -1,0 +1,19 @@
+maybe,bkb,10000
+ame,mkb,11000
+ame,mkb,11000
+maybe,bkb,10000
+maybe,bkb,10000
+yatoro,tango,20000
+collapse,tango,20001    // [0,20000)窗口触发 bkb=3,mkb=2
+maybe,bkb,10000
+fy,tango,21999          // [0,20000)窗口的允许迟到时间内 bkb=4,mkb=2
+maybe,bkb,10000
+fy,tango,22000          // [0,20000)窗口的允许迟到时间内 bkb=5,mkb=2
+maybe,bkb,10000
+collapse,disk,22001     // [0,20000)窗口关闭
+maybe,bkb,10000
+maybe,bkb,9999          // [0,20000)窗口已经关闭,这条迟到数据 只能侧输出
+ame,eye,23000
+chalice,bkb,44000       //[10000,30000)窗口关闭 bkb=7(1,4,5,8,10,12,14),tango=4(5,7,9,11),mkb=2(2,3) | [20000,40000)窗口关闭 tango=4(6,7,9,11),eye=1(16),disk=1(13)
+topson,mkb,54000        //[30000,50000)窗口关闭 bkb=1(17)
+ceb,mkb,65000           //[40000,60000)窗口关闭 mkb=1(18),bkb=1(17)
