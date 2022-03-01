@@ -110,6 +110,12 @@ public class TopNAggTimerDemo {
         }
     }
 
+    /**
+     * createAccumulator：创建一个新的累加器，开始一个新的聚合。累加器是正在运行的聚合的状态。
+     * add：将给定的输入添加到给定的累加器，并返回新的累加器值。
+     * getResult：从累加器获取聚合结果。
+     * merge：合并两个累加器，返回合并后的累加器的状态。
+     */
     // 增量聚合
     public static class ItemIncrAgg implements AggregateFunction<UserBehavior, Long, Long> {
         @Override
