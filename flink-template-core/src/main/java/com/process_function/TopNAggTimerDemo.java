@@ -7,6 +7,8 @@ import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.state.ListState;
 import org.apache.flink.api.common.state.ListStateDescriptor;
+import org.apache.flink.api.common.typeinfo.TypeHint;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -78,6 +80,8 @@ public class TopNAggTimerDemo {
         @Override
         public void open(Configuration parameters) throws Exception {
             itemViewCountListState = getRuntimeContext().getListState(new ListStateDescriptor<UserItemWindowAgg>("item-agg-list", UserItemWindowAgg.class));
+//            itemViewCountListState = getRuntimeContext().getListState(new ListStateDescriptor<UserItemWindowAgg>("item-agg-list", TypeInformation.of(new TypeHint<UserItemWindowAgg>() {
+//            })));
         }
 
         @Override
