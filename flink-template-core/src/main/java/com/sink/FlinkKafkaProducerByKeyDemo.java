@@ -23,10 +23,12 @@ public class FlinkKafkaProducerByKeyDemo {
 //        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
         properties.setProperty("bootstrap.servers", KAFKA_BROKERS);
         properties.setProperty("zookeeper.connect", KAFKA_ZK_CONNECT);
-        properties.setProperty("group.id", "test-group");
-        properties.setProperty("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        properties.setProperty("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        properties.setProperty("auto.offset.reset", "latest");
+        // EXACTLY_ONCE 精确一次性语义需要配置 生产者的事务超时属性,AT_LEAST_ONCE可以不配置
+        properties.setProperty("transaction.timeout.ms","300000");
+//        properties.setProperty("group.id", "test-group");
+//        properties.setProperty("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+//        properties.setProperty("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+//        properties.setProperty("auto.offset.reset", "latest");
 
 //        dataStreamSource.print();
         dataStreamSource.addSink(new FlinkKafkaProducer<String>("default_topic",
