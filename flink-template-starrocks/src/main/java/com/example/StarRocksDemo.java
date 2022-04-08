@@ -1,7 +1,8 @@
 package com.example;
 
 import com.starrocks.connector.flink.StarRocksSink;
-import com.starrocks.connector.flink.table.StarRocksSinkOptions;
+//import com.starrocks.connector.flink.table.StarRocksSinkOptions;
+import com.starrocks.connector.flink.table.sink.StarRocksSinkOptions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
