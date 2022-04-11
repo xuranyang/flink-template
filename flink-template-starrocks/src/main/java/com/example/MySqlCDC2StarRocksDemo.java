@@ -1,6 +1,7 @@
 package com.example;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
+import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
@@ -23,11 +24,15 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
  * PRIMARY KEY(id)
  * DISTRIBUTED BY HASH(id) BUCKETS 8;
  */
+//https://github.com/ververica/flink-cdc-connectors/blob/master/docs/content/connectors/mysql-cdc.md
 public class MySqlCDC2StarRocksDemo {
     public static void main(String[] args) {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
         env.setRuntimeMode(RuntimeExecutionMode.AUTOMATIC);
+//        SET 'execution.checkpointing.interval' = '10s';
+        env.enableCheckpointing(10000L, CheckpointingMode.EXACTLY_ONCE);
+
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
 
         String mysqlSourceSql = "CREATE TABLE mysql_cdc_source_table (\n" +
