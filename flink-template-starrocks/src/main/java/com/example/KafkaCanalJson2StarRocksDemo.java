@@ -5,6 +5,12 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
+/**
+ * 更新模型：只能 Insert、Update,不能Delete
+ * 主键模型：可以Insert、Update,Delete
+ * 主键模型 sink.properties.columns 参数最后必须要指定一个虚拟字段 __op
+ * 其他模型不可以指定 虚拟字段 __op
+ */
 public class KafkaCanalJson2StarRocksDemo {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
