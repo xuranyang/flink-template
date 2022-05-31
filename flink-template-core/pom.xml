@@ -24,6 +24,12 @@
             <artifactId>flink-metrics-dropwizard</artifactId>
             <version>${flink.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.bigdata</groupId>
+            <artifactId>flink-template-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
