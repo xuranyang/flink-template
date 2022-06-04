@@ -1,4 +1,4 @@
-package KafkaProducerTest;
+package KafkaProducerAPITest;
 
 import org.apache.kafka.clients.producer.Partitioner;
 import org.apache.kafka.common.Cluster;
