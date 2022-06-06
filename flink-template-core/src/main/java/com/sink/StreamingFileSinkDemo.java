@@ -56,7 +56,7 @@ public class StreamingFileSinkDemo {
                                 // 默认60s空闲，就滚动写入新的文件
                                 .withInactivityInterval(TimeUnit.MINUTES.toMillis(5))
                                 // 设置每个文件的最大大小 ,默认是128M
-                                .withMaxPartSize(1024 * 1024 * 1024)
+                                .withMaxPartSize(128 * 1024 * 1024)
                                 .build())
                 // 分桶策略
 //                .withBucketAssigner(bucketAssigner)
