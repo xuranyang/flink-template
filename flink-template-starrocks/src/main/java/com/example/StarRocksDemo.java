@@ -24,8 +24,8 @@ public class StarRocksDemo {
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
 //        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env, settings);
 
-//        batchSink(env);
-//        batchSink2(env);
+//        batchJsonSink(env);
+//        batchCsvSink(env);
         sqlStreamSink(tableEnv);
 
 //        env.execute();
@@ -78,7 +78,7 @@ public class StarRocksDemo {
         public String name;
     }
 
-    public static void batchSink(StreamExecutionEnvironment env) {
+    public static void batchJsonSink(StreamExecutionEnvironment env) {
         // -------- sink with raw json string stream --------
         DataStreamSource<String> dataStreamSource = env.fromElements("{\"score\": \"99\", \"name\": \"stephen\"}",
                 "{\"score\": \"100\", \"name\": \"lebron\"}");
@@ -107,7 +107,7 @@ public class StarRocksDemo {
         System.out.println("Sink Success");
     }
 
-    public static void batchSink2(StreamExecutionEnvironment env) {
+    public static void batchCsvSink(StreamExecutionEnvironment env) {
         // -------- sink with stream transformation --------
         DataStreamSource<RowData> rowDataDataStreamSource = env.fromElements(
                 new RowData(101, "kobe"),
