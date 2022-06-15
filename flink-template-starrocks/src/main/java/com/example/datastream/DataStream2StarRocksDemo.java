@@ -59,6 +59,9 @@ PROPERTIES (
 );
 
 */
+/**
+ * Flink StarRocksSink 默认使用csv格式的StreamLoad
+ */
 public class DataStream2StarRocksDemo {
     enum OP {
         INSERT, UPDATE, DELETE
