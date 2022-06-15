@@ -112,7 +112,6 @@ public class DataStream2StarRocksDemo {
                 .withProperty("table-name", table)
                 .withProperty("sink.properties.column_separator", "\\x01")
                 .withProperty("sink.properties.row_delimiter", "\\x02")
-                .withProperty("sink.properties.row_delimiter", "\\x02")
                 .withProperty("sink.buffer-flush.max-rows", "1000000")
                 .withProperty("sink.buffer-flush.max-bytes", "300000000")
                 .withProperty("sink.buffer-flush.interval-ms", "10000")
