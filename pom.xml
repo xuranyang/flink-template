@@ -251,7 +251,7 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <!--<version>5.1.38</version>-->
-            <version>8.0.17</version>
+            <version>8.0.28</version>
         </dependency>
 
         <dependency>
@@ -284,7 +284,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.68</version>
+            <version>1.2.83</version>
         </dependency>
 
         <dependency>
