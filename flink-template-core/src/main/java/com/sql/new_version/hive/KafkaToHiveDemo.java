@@ -14,7 +14,9 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * 要修复元数据以后才能查询到数据
+ * https://nightlies.apache.org/flink/flink-docs-release-1.13/docs/connectors/table/hive/hive_read_write/
+ *
+ * *注:Hive表要修复元数据以后才能查询到数据
  * msck repair table tmp.hive_log;
  */
 public class KafkaToHiveDemo {
