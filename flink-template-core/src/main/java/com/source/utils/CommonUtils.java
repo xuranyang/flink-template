@@ -2,7 +2,7 @@ package com.source.utils;
 
 import java.util.List;
 
-public class FlinkUtils {
+public class CommonUtils {
     public static <T> String ifNullToString(T data) {
         if (data == null) {
             return "";

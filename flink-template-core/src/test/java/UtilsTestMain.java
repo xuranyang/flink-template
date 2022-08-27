@@ -1,4 +1,4 @@
-import com.source.utils.FlinkUtils;
+import com.source.utils.CommonUtils;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -11,10 +11,10 @@ public class UtilsTestMain {
         String s2 = null;
         Integer i1 = 24;
         Integer i2 = null;
-        System.out.println(FlinkUtils.ifNullToString(s1));
-        System.out.println(FlinkUtils.ifNullToString(s2));
-        System.out.println(FlinkUtils.ifNullToString(i1));
-        System.out.println(FlinkUtils.ifNullToString(i2));
+        System.out.println(CommonUtils.ifNullToString(s1));
+        System.out.println(CommonUtils.ifNullToString(s2));
+        System.out.println(CommonUtils.ifNullToString(i1));
+        System.out.println(CommonUtils.ifNullToString(i2));
 
     }
 
@@ -30,17 +30,17 @@ public class UtilsTestMain {
         integerList.add(2);
         integerList.add(3);
 
-        String stringListFisrt = FlinkUtils.getListFisrt(stringList);
+        String stringListFisrt = CommonUtils.getListFisrt(stringList);
         System.out.println(stringListFisrt);
 
-        Integer integerListFirst = FlinkUtils.getListFisrt(integerList);
+        Integer integerListFirst = CommonUtils.getListFisrt(integerList);
         System.out.println(integerListFirst);
 
         System.out.println("-----------------");
 
         int topN = 2;
-        List<String> stringListTopN = FlinkUtils.getListTopN(stringList, topN);
-        List<Integer> integerListTopN = FlinkUtils.getListTopN(integerList, topN);
+        List<String> stringListTopN = CommonUtils.getListTopN(stringList, topN);
+        List<Integer> integerListTopN = CommonUtils.getListTopN(integerList, topN);
         System.out.println(stringListTopN);
         System.out.println(integerListTopN);
     }
