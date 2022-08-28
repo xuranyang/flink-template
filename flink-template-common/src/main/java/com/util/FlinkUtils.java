@@ -1,6 +1,7 @@
 package com.util;
 
 import com.constant.PropertiesConstants;
+import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -14,6 +15,16 @@ public class FlinkUtils {
     public static StreamExecutionEnvironment createEnv(long chkInterval) {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.enableCheckpointing(chkInterval);
+        return env;
+    }
+
+    public static StreamExecutionEnvironment initStreamExecEnv() {
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+        env.setRuntimeMode(RuntimeExecutionMode.STREAMING);
+        env.setParallelism(1);
+        env.enableCheckpointing(60000L);
+
         return env;
     }
 
