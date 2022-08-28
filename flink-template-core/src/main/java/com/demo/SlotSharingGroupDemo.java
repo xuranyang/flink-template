@@ -60,6 +60,8 @@ public class SlotSharingGroupDemo {
         filterDs.print("Filter");
         flatMapDs.print("FlatMap");
 
+        // 打印Json格式的执行计划,可以在 https://flink.apache.org/visualizer/ 中转为StreamGraph
+//        System.out.println(env.getExecutionPlan());
         env.execute();
     }
 }
