@@ -44,7 +44,7 @@ public class SlotSharingGroupDemo {
                 .uid("map-ds").name("map-ds").slotSharingGroup(slotGroupName1);
 
         DataStream<String> mapDs2 = dataStreamSource.map(s -> "[Map Info2]:" + s)
-                .uid("map-ds2").name("map-ds").slotSharingGroup(slotGroupName1);
+                .uid("map-ds2").name("map-ds2").slotSharingGroup(slotGroupName1);
 
         DataStream<String> filterDs = dataStreamSource.filter(s -> !s.startsWith("1"))
                 .uid("filter-ds").name("filter-ds").slotSharingGroup(slotGroupName1);
