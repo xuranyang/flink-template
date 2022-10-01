@@ -31,26 +31,26 @@ public class ParameterConfigUtils {
     private StreamExecutionEnvironment env;
     private ParameterTool parameterTool;
 
-    public ParameterConfigUtils(StreamExecutionEnvironment env, ParameterTool parameterTool) {
-        this.env = env;
-        this.parameterTool = parameterTool;
-    }
+//    public ParameterConfigUtils(StreamExecutionEnvironment env, ParameterTool parameterTool) {
+//        this.env = env;
+//        this.parameterTool = parameterTool;
+//    }
 
-    public void setCheckpoint(String configName) {
+    public static void setCheckpoint(StreamExecutionEnvironment env, ParameterTool parameterTool, String configName) {
         long chk = parameterTool.getLong(configName, -1L);
         if (chk > 0) {
             env.enableCheckpointing(chk);
         }
     }
 
-    public void setParallelism(String configName) {
+    public static void setParallelism(StreamExecutionEnvironment env, ParameterTool parameterTool, String configName) {
         int parallelism = parameterTool.getInt(configName, -1);
         if (parallelism > 0) {
             env.setParallelism(parallelism);
         }
     }
 
-    public void setRuntimeMode(String configName) {
+    public static void setRuntimeMode(StreamExecutionEnvironment env, ParameterTool parameterTool, String configName) {
         String runtimeMode = parameterTool.get(configName, null);
         if ("streaming".equalsIgnoreCase(runtimeMode)) {
             env.setRuntimeMode(RuntimeExecutionMode.STREAMING);
@@ -59,9 +59,9 @@ public class ParameterConfigUtils {
         }
     }
 
-    public void setFlinkParameterConfig() {
-        setCheckpoint(FlinkEnvConfigEnum.Checkpoint.configName);
-        setParallelism(FlinkEnvConfigEnum.Parallelism.configName);
-        setRuntimeMode(FlinkEnvConfigEnum.RuntimeMode.configName);
+    public static void setFlinkParameterConfig(StreamExecutionEnvironment env, ParameterTool parameterTool) {
+        setCheckpoint(env, parameterTool, FlinkEnvConfigEnum.Checkpoint.configName);
+        setParallelism(env, parameterTool, FlinkEnvConfigEnum.Parallelism.configName);
+        setRuntimeMode(env, parameterTool, FlinkEnvConfigEnum.RuntimeMode.configName);
     }
 }

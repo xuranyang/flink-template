@@ -8,7 +8,7 @@ public class FlinkParametersTest {
         StreamExecutionEnvironment env = FlinkUtils.createEnv();
         ParameterTool parameterTool = FlinkUtils.getParameterTool(args);
 
-        new ParameterConfigUtils(env, parameterTool).setFlinkParameterConfig();
+        ParameterConfigUtils.setFlinkParameterConfig(env, parameterTool);
 
         env.fromElements("123","456","789").print();
 
