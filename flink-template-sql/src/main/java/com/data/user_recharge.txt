@@ -1,0 +1,5 @@
+{"rechargeAmount":100.0,"rechargeTs":1664596800000,"rechargeType":1,"userId":"1001"}
+{"rechargeAmount":200.0,"rechargeTs":1664596801000,"rechargeType":1,"userId":"1003"}
+{"rechargeAmount":300.0,"rechargeTs":1664596803000,"rechargeType":1,"userId":"1005"}
+{"rechargeAmount":400.0,"rechargeTs":1664596805000,"rechargeType":1,"userId":"1007"}
+{"rechargeAmount":500.0,"rechargeTs":1664596807000,"rechargeType":1,"userId":"1001"}

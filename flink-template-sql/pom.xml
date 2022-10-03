@@ -14,6 +14,9 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <flink.version>1.13.6</flink.version>
+        <flink.binary.version>1.13</flink.binary.version>
+        <starrocks.version>1.2.1</starrocks.version>
     </properties>
 
     <dependencies>
@@ -42,6 +45,18 @@
             <artifactId>flink-table-common</artifactId>
             <version>${flink.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.bigdata</groupId>
+            <artifactId>flink-template-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
 
+        <!-- StarRocks依赖  -->
+        <dependency>
+            <groupId>com.starrocks</groupId>
+            <artifactId>flink-connector-starrocks</artifactId>
+            <version>${starrocks.version}_flink-${flink.binary.version}_${scala.binary.version}</version>
+        </dependency>
     </dependencies>
 </project>
