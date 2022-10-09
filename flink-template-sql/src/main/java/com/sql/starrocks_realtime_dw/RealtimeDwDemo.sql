@@ -148,3 +148,58 @@ CREATE TABLE sink_sr_dws_user_recharge_login(
 INSERT INTO sink_sr_dws_user_recharge_login
 SELECT userId, window_end,login_num,first_login_time,last_login_time,recharge_num,total_recharge_amount,first_recharge_time,last_recharge_time FROM view_dws_user_recharge_login
 ;
+
+-- hbase
+create 'dim_user_test',{NAME=>'base_info',COMPRESSION=>'SNAPPY'}
+put 'dim_user_test','1001','base_info:gender','male'
+put 'dim_user_test','1001','base_info:region','0'
+put 'dim_user_test','1002','base_info:gender','male'
+put 'dim_user_test','1002','base_info:region','0'
+put 'dim_user_test','1003','base_info:gender','female'
+put 'dim_user_test','1003','base_info:region','1'
+
+CREATE TABLE dim_user(
+    rowkey STRING,
+    base_info ROW<gender STRING,region INT>,
+    PRIMARY KEY (rowkey) NOT ENFORCED
+) WITH (
+    'connector' = 'hbase-2.2',
+    'table-name' = 'dim_user_test',
+    'zookeeper.quorum' = 'fat01:2181,fat02:2181,fat03:2181',
+    'zookeeper.znode.parent' = '/hbase'
+);
+
+CREATE TABLE sink_sr_dws_user_recharge_login_join_dim(
+    userId STRING,
+    window_end TIMESTAMP,
+    gender STRING,
+    region INT,
+    login_num BIGINT,
+    first_login_time TIMESTAMP,
+    last_login_time TIMESTAMP,
+    recharge_num BIGINT,
+    total_recharge_amount DOUBLE,
+    first_recharge_time TIMESTAMP,
+    last_recharge_time TIMESTAMP
+) WITH (
+    'connector' = 'starrocks',
+    'jdbc-url'='jdbc:mysql://test-starrocks:9030?serverTimezone=Asia/Shanghai',
+    'load-url'='test-starrocks:8035',
+    'database-name' = 'tmp',
+    'table-name' = 'dws_user_recharge_login_join_dim',
+    'username' = 'root',
+    'password' = '',
+    'sink.buffer-flush.max-rows' = '1000000',
+    'sink.buffer-flush.max-bytes' = '300000000',
+    'sink.buffer-flush.interval-ms' = '5000',
+    'sink.properties.column_separator' = '\x01',
+    'sink.properties.row_delimiter' = '\x02',
+    'sink.max-retries' = '3',
+    'sink.properties.columns' = 'userId,window_end,gender,region,login_num,first_login_time,last_login_time,recharge_num,total_recharge_amount,first_recharge_time,last_recharge_time'
+    )
+;
+
+INSERT INTO sink_sr_dws_user_recharge_login_join_dim
+SELECT t1.userId,window_end,t2.gender,cast(t2.region as int) as region,login_num,first_login_time,last_login_time,recharge_num,total_recharge_amount,first_recharge_time,last_recharge_time
+FROM view_dws_user_recharge_login t1 LEFT JOIN dim_user t2 on t1.userId=t2.rowkey
+;
