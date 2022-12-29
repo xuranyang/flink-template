@@ -368,6 +368,7 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-base</artifactId>
             <version>1.14.4</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
