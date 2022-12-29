@@ -5,17 +5,19 @@ import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.DataTypes;
+import org.apache.flink.table.api.FormatDescriptor;
 import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.TableDescriptor;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.table.descriptors.Csv;
-import org.apache.flink.table.descriptors.FileSystem;
+//import org.apache.flink.table.descriptors.Csv;
+//import org.apache.flink.table.descriptors.FileSystem;
 import org.apache.flink.table.descriptors.Schema;
 import org.apache.flink.types.Row;
 
 public class CommUsedTableAPI {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setRuntimeMode(RuntimeExecutionMode.AUTOMATIC);
+        env.setRuntimeMode(RuntimeExecutionMode.BATCH);
 
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
 
@@ -26,8 +28,20 @@ public class CommUsedTableAPI {
          */
 
         /**
+         * 新版Flink1.14的createTemporaryTable用法
          * 直接读取指定Source数据注册成Table(不通过DataStream间接转换成Table)
          */
+        tableEnv.createTemporaryTable("t_info", TableDescriptor.forConnector("filesystem")
+                .option("path", filePath)
+                .format(FormatDescriptor.forFormat("csv").option("field-delimiter", ",").build())
+                .schema(org.apache.flink.table.api.Schema.newBuilder()
+                        .column("club", DataTypes.STRING())
+                        .column("userId", DataTypes.STRING())
+                        .column("pos", DataTypes.TINYINT())
+                        .column("age", DataTypes.INT())
+                        .build())
+                .build());
+        /*
         tableEnv.connect(new FileSystem().path(filePath))
                 .withFormat(new Csv())
                 .withSchema(new Schema()
@@ -37,6 +51,7 @@ public class CommUsedTableAPI {
                         .field("age", DataTypes.INT())
                 )
                 .createTemporaryTable("t_info");
+        */
 
         Table t_info = tableEnv.from("t_info");
         Table filterTable = t_info.select("club,userId,pos,age").filter("club=='EHOME'");

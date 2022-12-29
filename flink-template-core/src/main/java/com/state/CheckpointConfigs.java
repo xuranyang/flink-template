@@ -37,7 +37,8 @@ public class CheckpointConfigs {
         // 不会在任务正常停止的过程中清理掉检查点数据，而是会一直保存在外部系统介质中，另外也可以通过从外部检查点中对任务进行恢复
         env.getCheckpointConfig().enableExternalizedCheckpoints(org.apache.flink.streaming.api.environment.CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
         // 如果有更近的保存点时，是否将作业回退到该检查点
-        env.getCheckpointConfig().setPreferCheckpointForRecovery(true);
+        // 1.14已经没有 setPreferCheckpointForRecovery 该方法
+//        env.getCheckpointConfig().setPreferCheckpointForRecovery(true);
         // 设置可以允许的checkpoint失败数
         env.getCheckpointConfig().setTolerableCheckpointFailureNumber(3);
 
