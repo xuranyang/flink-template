@@ -14,6 +14,9 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.descriptors.Schema;
 import org.apache.flink.types.Row;
 
+/**
+ * https://blog.csdn.net/wangzhongyudie/article/details/124732171
+ */
 public class CommUsedTableAPI {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
