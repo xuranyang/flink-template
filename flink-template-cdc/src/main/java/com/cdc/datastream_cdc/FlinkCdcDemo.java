@@ -1,12 +1,12 @@
 package com.cdc.datastream_cdc;
 
-import com.alibaba.ververica.cdc.debezium.DebeziumSourceFunction;
+
+import com.ververica.cdc.connectors.mysql.source.MySqlSource;
+import com.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
-import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
-import com.alibaba.ververica.cdc.debezium.DebeziumDeserializationSchema;
+
 
 /**
  * https://ververica.github.io/flink-cdc-connectors/master/content/about.html
@@ -14,7 +14,7 @@ import com.alibaba.ververica.cdc.debezium.DebeziumDeserializationSchema;
 public class FlinkCdcDemo {
     public static void main(String[] args) throws Exception {
 
-        DebeziumSourceFunction<String> mysqlSource = MySQLSource.<String>builder()
+        MySqlSource<String> mysqlSource = MySqlSource.<String>builder()
                 .hostname("127.0.0.1")
                 .port(3306)
                 .databaseList("flink_test_db") // set captured database
@@ -27,14 +27,14 @@ public class FlinkCdcDemo {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        //3.使用CDC Source从MySQL读取数据
-        DataStreamSource<String> mysqlDS = env.addSource(mysqlSource);
-
-        //4.打印数据
-        mysqlDS.print();
-
         // enable checkpoint
         env.enableCheckpointing(3000);
+
+        //3.使用CDC Source从MySQL读取数据
+        DataStreamSource<String> mysqlDS = env.fromSource(mysqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source");
+
+        //4.打印数据
+        mysqlDS.setParallelism(4).print().setParallelism(1);
 
         env.execute("Print MySQL Snapshot + Binlog");
     }

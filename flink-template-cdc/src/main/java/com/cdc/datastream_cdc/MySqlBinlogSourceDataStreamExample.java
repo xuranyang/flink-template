@@ -1,12 +1,11 @@
 package com.cdc.datastream_cdc;
 
 
-import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
-import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
-import com.alibaba.ververica.cdc.debezium.DebeziumSourceFunction;
-import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
+import com.ververica.cdc.connectors.mysql.source.MySqlSource;
+import com.ververica.cdc.connectors.mysql.table.StartupOptions;
+import com.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
+import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
-import org.apache.flink.runtime.executiongraph.restart.RestartStrategy;
 import org.apache.flink.runtime.state.filesystem.FsStateBackend;
 import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.environment.CheckpointConfig;
@@ -29,15 +28,15 @@ public class MySqlBinlogSourceDataStreamExample {
         env.setStateBackend(new FsStateBackend("hdfs://hadoop101:8020/flink/cdc/ck"));
 
         // 最多重启3次,每次重启间隔2秒
-        env.setRestartStrategy(RestartStrategies.fixedDelayRestart(3,2000L));
+        env.setRestartStrategy(RestartStrategies.fixedDelayRestart(3, 2000L));
 
         // 设置   cancel任务时,保留最后一次的Checkpoint
         env.getCheckpointConfig().enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
 
         // 设置访问HDFS的用户名
-        System.setProperty("HADOOP_USER_NAME","hive");
+        System.setProperty("HADOOP_USER_NAME", "hive");
 
-        DebeziumSourceFunction<String> sourceFunction = MySQLSource.<String>builder()
+        MySqlSource<String> sourceFunction = MySqlSource.<String>builder()
                 .hostname("localhost")
                 .port(3306)
                 .username("root")
@@ -53,16 +52,14 @@ public class MySqlBinlogSourceDataStreamExample {
                 // 从debezium指定位点继续读取binlog,断点续传
                 .startupOptions(StartupOptions.timestamp(1000L))
                 // 从指定的binlog的时间戳开始读取
-                .startupOptions(StartupOptions.specificOffset("specificOffsetFile",123456789))
+                .startupOptions(StartupOptions.specificOffset("specificOffsetFile", 123456789))
                 // .debeziumProperties(new Properties())
                 // 反序列化
                 .deserializer(new StringDebeziumDeserializationSchema())
                 .build();
 
 
-
-
-        env.addSource(sourceFunction).print();
+        env.fromSource(sourceFunction, WatermarkStrategy.noWatermarks(), "MySQL Source").print();
 
         env.execute();
     }

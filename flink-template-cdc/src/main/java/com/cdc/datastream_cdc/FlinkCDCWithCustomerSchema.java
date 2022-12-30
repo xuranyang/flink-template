@@ -1,10 +1,10 @@
 package com.cdc.datastream_cdc;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
-import com.alibaba.ververica.cdc.debezium.DebeziumDeserializationSchema;
-import com.alibaba.ververica.cdc.debezium.DebeziumSourceFunction;
+import com.ververica.cdc.connectors.mysql.source.MySqlSource;
+import com.ververica.cdc.debezium.DebeziumDeserializationSchema;
 import io.debezium.data.Envelope;
+import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -28,7 +28,7 @@ public class FlinkCDCWithCustomerSchema {
         Properties properties = new Properties();
 
         properties.setProperty("debezium.snapshot.mode", "initial");
-        DebeziumSourceFunction<String> mysqlSource = MySQLSource.<String>builder()
+        MySqlSource<String> mysqlSource = MySqlSource.<String>builder()
                 .hostname("master01")
                 .port(3306)
                 .username("root")
@@ -82,7 +82,7 @@ public class FlinkCDCWithCustomerSchema {
                 .build();
 
         //3.使用CDC Source从MySQL读取数据
-        DataStreamSource<String> mysqlDS = env.addSource(mysqlSource);
+        DataStreamSource<String> mysqlDS = env.fromSource(mysqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source");
 
         //4.打印数据
         mysqlDS.print();
