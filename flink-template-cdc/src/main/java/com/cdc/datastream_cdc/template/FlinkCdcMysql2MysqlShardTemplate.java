@@ -84,7 +84,7 @@ public class FlinkCdcMysql2MysqlShardTemplate {
         String dbTable = database + "." + table;
 
         String sourceMysqlConfig = parameterTool.get("sourceMysqlConfig", "source");
-        MysqlConfig mysqlConfig = getMysqlConfig("sourceMysqlConfig", parameterTool);
+        MysqlConfig mysqlConfig = getMysqlConfig(sourceMysqlConfig, parameterTool);
         String host = mysqlConfig.getHost();
         Integer port = mysqlConfig.getPort();
         String userName = mysqlConfig.getUserName();
