@@ -228,7 +228,7 @@ public class FlinkCdcMysql2MysqlShardTemplate {
                     String rows = String.join(",", rowsList);
                     String placeholders = String.join(",", placeholderList);
 
-                    String sql = String.format("replace into %s.%s(%s) values (?,?,?)", database, table, rows, placeholders);
+                    String sql = String.format("replace into %s.%s(%s) values (%s)", database, table, rows, placeholders);
                     pstmt = mysqlConnection.prepareStatement(sql);
 
                     for (int i = 0; i < valueList.size(); i++) {
