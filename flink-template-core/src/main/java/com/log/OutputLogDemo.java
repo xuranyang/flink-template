@@ -18,12 +18,10 @@ public class OutputLogDemo {
 
         DataStreamSource<Tuple2<String, String>> dataStreamSource = env.addSource(new RandomSource(200));
 
-        dataStreamSource.flatMap(new FlatMapFunction<Tuple2<String, String>, String>() {
-            @Override
-            public void flatMap(Tuple2<String, String> value, Collector<String> collector) throws Exception {
-                log.info("[OutputLog]:{}", value);
-            }
-        });
+        dataStreamSource.flatMap((FlatMapFunction<Tuple2<String, String>, String>) (value, collector) -> {
+            log.info("[OutputLog]:{}", value);
+            collector.collect(value.toString());
+        }).print();
 
         env.execute();
     }
