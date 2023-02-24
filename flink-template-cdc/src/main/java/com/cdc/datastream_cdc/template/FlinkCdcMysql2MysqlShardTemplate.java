@@ -119,6 +119,11 @@ public class FlinkCdcMysql2MysqlShardTemplate {
                         //获取操作类型 READ DELETE UPDATE CREATE
                         Envelope.Operation operation = Envelope.operationFor(sourceRecord);
 
+                        // binlog文件及位点
+                        String binlogFile = sourceRecord.sourceOffset().get("file").toString();
+                        String binlogPos = sourceRecord.sourceOffset().get("pos").toString();
+                        log.info("[BinlogInfo]:{}|{}", binlogFile, binlogPos);
+
                         //获取值信息并转换为Struct类型
                         Struct value = (Struct) sourceRecord.value();
 
@@ -167,111 +172,111 @@ public class FlinkCdcMysql2MysqlShardTemplate {
 
 
         DataStreamSource<String> dataStreamSource = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source");
-//        dataStreamSource.print("====>").setParallelism(1);
-
-
-        List<String> opList = Arrays.asList(CREATE, DELETE, UPDATE);
-
-        SingleOutputStreamOperator<BinlogRow> dataStream = dataStreamSource.filter((FilterFunction<String>) s -> {
-            String op = JSONObject.parseObject(s).getString(OP);
-            return opList.contains(op);
-        }).keyBy((KeySelector<String, Long>) s -> {
-            BinlogRow binlogRow = JSONObject.parseObject(s, BinlogRow.class);
-            JSONObject afterData = binlogRow.getAfterData();
-            if (afterData.containsKey(modField)) {
-                return afterData.getLong(modField) % modNum;
-            } else {
-                JSONObject beforeData = binlogRow.getBeforeData();
-                return beforeData.getLong(modField) % modNum;
-            }
-        }).map((MapFunction<String, BinlogRow>) s -> JSONObject.parseObject(s, BinlogRow.class));
-
-        dataStream.addSink(new RichSinkFunction<BinlogRow>() {
-            private ParameterTool parameterTool;
-            private Connection mysqlConnection;
-            private PreparedStatement pstmt;
-
-            @Override
-            public void open(Configuration parameters) throws Exception {
-                parameterTool = (ParameterTool) getRuntimeContext().getExecutionConfig().getGlobalJobParameters();
-                mysqlConnection = createMySQLConncetion();
-            }
-
-            @Override
-            public void close() throws Exception {
-                super.close();
-            }
-
-            @Override
-            public void invoke(BinlogRow value, Context context) throws Exception {
-                String database = value.getDatabase();
-                String table = value.getTable();
-
-                String op = value.getOp();
-                if (op.equals(CREATE) || op.equals(UPDATE)) {
-                    JSONObject afterData = value.getAfterData();
-                    long shard = afterData.getLong(modField) % modNum;
-                    table += "_" + shard;
-
-                    List<String> rowsList = new ArrayList<>();
-                    List<String> valueList = new ArrayList<>();
-                    List<String> placeholderList = new ArrayList<>();
-
-                    for (Map.Entry<String, Object> kv : afterData.entrySet()) {
-                        String k = kv.getKey();
-                        String v = kv.getValue().toString();
-                        rowsList.add(k);
-                        valueList.add(v);
-                        placeholderList.add("?");
-                    }
-
-                    String rows = String.join(",", rowsList);
-                    String placeholders = String.join(",", placeholderList);
-
-                    String sql = String.format("replace into %s.%s(%s) values (%s)", database, table, rows, placeholders);
-                    pstmt = mysqlConnection.prepareStatement(sql);
-
-                    for (int i = 0; i < valueList.size(); i++) {
-                        pstmt.setString(i + 1, valueList.get(i));
-                    }
-                    pstmt.addBatch();
-                    int[] count = pstmt.executeBatch();
-                    log.info("成功预执行了" + count.length + "行数据");
-                    mysqlConnection.commit();
-
-                } else {
-                    // DELETE
-                    JSONObject beforeData = value.getBeforeData();
-                    long shard = beforeData.getLong(modField) % modNum;
-                    table += "_" + shard;
-
-                    Long pkValue = beforeData.getLong(primaryKey);
-                    String sql = String.format("delete from %s.%s where %s=?", database, table, primaryKey);
-                    pstmt = mysqlConnection.prepareStatement(sql);
-                    pstmt.setLong(1, pkValue);
-
-                    pstmt.addBatch();
-                    int[] count = pstmt.executeBatch();
-                    log.info("成功预执行了" + count.length + "行数据");
-                    mysqlConnection.commit();
-                }
-
-
-            }
-
-            public Connection createMySQLConncetion() throws SQLException {
-                String sinkMysqlConfig = parameterTool.get("sinkMysqlConfig", "sink");
-                MysqlConfig mysqlConifg = getMysqlConfig(sinkMysqlConfig, parameterTool);
-                String host = mysqlConifg.getHost();
-                String port = mysqlConifg.getPort().toString();
-                String userName = mysqlConifg.getUserName();
-                String password = mysqlConifg.getPassword();
-
-                Connection mysqlConnection = JdbcUtil.createDruidConnectionPool(host, port, userName, password, database);
-                mysqlConnection.setAutoCommit(false);
-                return mysqlConnection;
-            }
-        });
+        dataStreamSource.print("====>").setParallelism(1);
+//
+//
+//        List<String> opList = Arrays.asList(CREATE, DELETE, UPDATE);
+//
+//        SingleOutputStreamOperator<BinlogRow> dataStream = dataStreamSource.filter((FilterFunction<String>) s -> {
+//            String op = JSONObject.parseObject(s).getString(OP);
+//            return opList.contains(op);
+//        }).keyBy((KeySelector<String, Long>) s -> {
+//            BinlogRow binlogRow = JSONObject.parseObject(s, BinlogRow.class);
+//            JSONObject afterData = binlogRow.getAfterData();
+//            if (afterData.containsKey(modField)) {
+//                return afterData.getLong(modField) % modNum;
+//            } else {
+//                JSONObject beforeData = binlogRow.getBeforeData();
+//                return beforeData.getLong(modField) % modNum;
+//            }
+//        }).map((MapFunction<String, BinlogRow>) s -> JSONObject.parseObject(s, BinlogRow.class));
+//
+//        dataStream.addSink(new RichSinkFunction<BinlogRow>() {
+//            private ParameterTool parameterTool;
+//            private Connection mysqlConnection;
+//            private PreparedStatement pstmt;
+//
+//            @Override
+//            public void open(Configuration parameters) throws Exception {
+//                parameterTool = (ParameterTool) getRuntimeContext().getExecutionConfig().getGlobalJobParameters();
+//                mysqlConnection = createMySQLConncetion();
+//            }
+//
+//            @Override
+//            public void close() throws Exception {
+//                super.close();
+//            }
+//
+//            @Override
+//            public void invoke(BinlogRow value, Context context) throws Exception {
+//                String database = value.getDatabase();
+//                String table = value.getTable();
+//
+//                String op = value.getOp();
+//                if (op.equals(CREATE) || op.equals(UPDATE)) {
+//                    JSONObject afterData = value.getAfterData();
+//                    long shard = afterData.getLong(modField) % modNum;
+//                    table += "_" + shard;
+//
+//                    List<String> rowsList = new ArrayList<>();
+//                    List<String> valueList = new ArrayList<>();
+//                    List<String> placeholderList = new ArrayList<>();
+//
+//                    for (Map.Entry<String, Object> kv : afterData.entrySet()) {
+//                        String k = kv.getKey();
+//                        String v = kv.getValue().toString();
+//                        rowsList.add(k);
+//                        valueList.add(v);
+//                        placeholderList.add("?");
+//                    }
+//
+//                    String rows = String.join(",", rowsList);
+//                    String placeholders = String.join(",", placeholderList);
+//
+//                    String sql = String.format("replace into %s.%s(%s) values (%s)", database, table, rows, placeholders);
+//                    pstmt = mysqlConnection.prepareStatement(sql);
+//
+//                    for (int i = 0; i < valueList.size(); i++) {
+//                        pstmt.setString(i + 1, valueList.get(i));
+//                    }
+//                    pstmt.addBatch();
+//                    int[] count = pstmt.executeBatch();
+//                    log.info("成功预执行了" + count.length + "行数据");
+//                    mysqlConnection.commit();
+//
+//                } else {
+//                    // DELETE
+//                    JSONObject beforeData = value.getBeforeData();
+//                    long shard = beforeData.getLong(modField) % modNum;
+//                    table += "_" + shard;
+//
+//                    Long pkValue = beforeData.getLong(primaryKey);
+//                    String sql = String.format("delete from %s.%s where %s=?", database, table, primaryKey);
+//                    pstmt = mysqlConnection.prepareStatement(sql);
+//                    pstmt.setLong(1, pkValue);
+//
+//                    pstmt.addBatch();
+//                    int[] count = pstmt.executeBatch();
+//                    log.info("成功预执行了" + count.length + "行数据");
+//                    mysqlConnection.commit();
+//                }
+//
+//
+//            }
+//
+//            public Connection createMySQLConncetion() throws SQLException {
+//                String sinkMysqlConfig = parameterTool.get("sinkMysqlConfig", "sink");
+//                MysqlConfig mysqlConifg = getMysqlConfig(sinkMysqlConfig, parameterTool);
+//                String host = mysqlConifg.getHost();
+//                String port = mysqlConifg.getPort().toString();
+//                String userName = mysqlConifg.getUserName();
+//                String password = mysqlConifg.getPassword();
+//
+//                Connection mysqlConnection = JdbcUtil.createDruidConnectionPool(host, port, userName, password, database);
+//                mysqlConnection.setAutoCommit(false);
+//                return mysqlConnection;
+//            }
+//        });
 
 
         env.execute();
