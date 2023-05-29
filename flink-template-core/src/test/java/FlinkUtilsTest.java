@@ -1,6 +1,5 @@
 import com.util.FlinkUtils;
 import org.apache.flink.api.java.utils.ParameterTool;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 public class FlinkUtilsTest {
     /**

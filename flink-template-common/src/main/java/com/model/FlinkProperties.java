@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.apache.flink.api.common.RuntimeExecutionMode;
 
 @Data
 @Builder
@@ -22,5 +23,5 @@ public class FlinkProperties {
     private String globalStrategy;
     private Long globalTimestamp = -1L;
     private String globalTimeZone;
-    private String mode = "STREAMING";
+    private String mode = RuntimeExecutionMode.STREAMING.name();
 }
