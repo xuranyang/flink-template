@@ -13,11 +13,12 @@ import org.apache.flink.api.common.RuntimeExecutionMode;
 @AllArgsConstructor
 //@Accessors(chain = true)
 public class FlinkProperties {
-    private Integer parallelism;
+    private Integer parallelism = 1;
     private Long chk;
     private String envType;
-    private String kafkaTopic;
+    private String kafkaTopics;
     private String kafkaBrokers;
+    private String kafkaBootstrapServers;
     private String kafkaGroupId;
     private String kafkaGroupIdSuffix;
     private String globalStrategy;

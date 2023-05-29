@@ -5,6 +5,7 @@ import com.google.common.base.CaseFormat;
 import com.google.common.collect.Maps;
 import com.model.FlinkProperties;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -111,6 +112,13 @@ public class FlinkUtils {
      */
     public static FlinkProperties setSpecialParameterToFlinkProperties(FlinkProperties flinkProperties, ParameterTool parameterTool) {
         flinkProperties.setEnvType(parameterTool.get(PropertiesConstants.ENV_TYPE));
+
+        String kafkaBrokers = flinkProperties.getKafkaBrokers();
+        if (StringUtils.isNotBlank(kafkaBrokers)) {
+            // 通过Kafka配置名获取明细地址
+            flinkProperties.setKafkaBootstrapServers(parameterTool.get(kafkaBrokers));
+        }
+
         return flinkProperties;
     }
 }
