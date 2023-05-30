@@ -113,6 +113,7 @@ public class FlinkUtils {
     public static FlinkProperties setSpecialParameterToFlinkProperties(FlinkProperties flinkProperties, ParameterTool parameterTool) {
         flinkProperties.setEnvType(parameterTool.get(PropertiesConstants.ENV_TYPE));
 
+        // 如果 kafkaBrokers 参数不为空,则 通过kafkaBrokers来设置 kafkaBootstrapServers
         String kafkaBrokers = flinkProperties.getKafkaBrokers();
         if (StringUtils.isNotBlank(kafkaBrokers)) {
             // 通过Kafka配置名获取明细地址
@@ -120,5 +121,33 @@ public class FlinkUtils {
         }
 
         return flinkProperties;
+    }
+
+    public static FlinkProperties getEnvFlinkProperties(StreamExecutionEnvironment env) throws Exception {
+        ParameterTool parameterTool = (ParameterTool) env.getConfig().getGlobalJobParameters();
+        FlinkProperties flinkProperties = convertProperties(new FlinkProperties(), parameterTool);
+        setSpecialParameterToFlinkProperties(flinkProperties, parameterTool);
+        return flinkProperties;
+    }
+
+    public static void setEnvConfig(StreamExecutionEnvironment env, FlinkProperties flinkProperties) {
+        setEnvCheckpoint(env, flinkProperties.getChk());
+        setEnvRuntimeMode(env, flinkProperties.getMode());
+    }
+
+    public static void setEnvCheckpoint(StreamExecutionEnvironment env, Long chk) {
+        if (chk != null) {
+            env.enableCheckpointing(chk);
+        }
+    }
+
+    public static void setEnvRuntimeMode(StreamExecutionEnvironment env, String mod) {
+        if (RuntimeExecutionMode.STREAMING.name().equalsIgnoreCase(mod)) {
+            env.setRuntimeMode(RuntimeExecutionMode.STREAMING);
+        } else if (RuntimeExecutionMode.BATCH.name().equalsIgnoreCase(mod)) {
+            env.setRuntimeMode(RuntimeExecutionMode.BATCH);
+        } else {
+            env.setRuntimeMode(RuntimeExecutionMode.AUTOMATIC);
+        }
     }
 }

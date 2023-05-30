@@ -12,8 +12,8 @@ public class FlinkPropertiesTest {
 
     /*
      *  启动参数传入参考:
-        -envType fat -chk 60000 -globalStrategy earliest -kafkaBrokers kafka.brokers -kafkaTopics Data_Test_1 -kafkaGroupId test_group
-        -env_type fat -chk 60000 -global_strategy earliest -kafka_brokers kafka.brokers -kafka_topics Data_Test_1 -kafka_group_id test_group
+        -envType fat -chk 60000 -globalStrategy earliest -kafkaBrokers kafka.brokers -kafkaTopics Data_Test_1 -kafkaGroupId test_group -kafkaOffsets 0:15
+        -env_type fat -chk 60000 -global_strategy special -kafka_brokers kafka.brokers -kafka_topics Data_Test_1 -kafka_group_id test_group -kafka_offsets 0:15
      */
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = FlinkUtils.createEnv();
@@ -24,9 +24,11 @@ public class FlinkPropertiesTest {
 //        FlinkProperties flinkProperties = new FlinkProperties();
 //        BeanUtils.copyProperties(flinkProperties, parameterTool.toMap());
 
-        FlinkProperties flinkProperties = FlinkUtils.convertProperties(new FlinkProperties(), parameterTool);
-        FlinkUtils.setSpecialParameterToFlinkProperties(flinkProperties, parameterTool);
+//        FlinkProperties flinkProperties = FlinkUtils.convertProperties(new FlinkProperties(), parameterTool);
+//        FlinkUtils.setSpecialParameterToFlinkProperties(flinkProperties, parameterTool);
 
+        FlinkProperties flinkProperties = FlinkUtils.getEnvFlinkProperties(env);
+        FlinkUtils.setEnvConfig(env, flinkProperties);
 //        System.out.println(flinkProperties);
 //        System.out.println(parameterTool.get(flinkProperties.getKafkaBrokers()));
 
@@ -41,8 +43,8 @@ public class FlinkPropertiesTest {
 //        DataStreamSource<String> kafkaSource = FlinkKafkaUtils.getKafkaSource(env, flinkProperties);
 //        DataStreamSource<String> kafkaSource = FlinkKafkaUtils.getKafkaSource(env, flinkKafkaProperties);
 
-//        DataStreamSource<KafkaRecord> kafkaSource = FlinkKafkaUtils.getKafkaSource(env, flinkProperties, new KafkaRecordSchema());
-        DataStreamSource<KafkaRecord> kafkaSource = FlinkKafkaUtils.getKafkaSource(env, flinkKafkaProperties, new KafkaRecordSchema());
+        DataStreamSource<KafkaRecord> kafkaSource = FlinkKafkaUtils.getKafkaSource(env, flinkProperties, new KafkaRecordSchema());
+//        DataStreamSource<KafkaRecord> kafkaSource = FlinkKafkaUtils.getKafkaSource(env, flinkKafkaProperties, new KafkaRecordSchema());
 
         kafkaSource.print();
 

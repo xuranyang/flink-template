@@ -9,6 +9,7 @@ public class PropertiesConstants {
     public static final String GLOBAL_DEV_PROPERTIES_FILE_NAME = "/global.application-dev.properties";
     public static final String CHINA_TIME_ZONE = "GMT+08:00";
     public static final String SPLIT_COMMA = ",";
+    public static final String SPLIT_COLON = ":";
 
     public static final String HBASE_PARAM_POOL_SIZE = "hbasePoolSize";
     public static final String HBASE_PARAM_USE_THREAD_POOL = "useThreadPool";

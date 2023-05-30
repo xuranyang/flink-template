@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.apache.flink.api.common.RuntimeExecutionMode;
+import org.apache.kafka.common.TopicPartition;
+
+import java.util.Map;
 
 @Data
 @Builder
@@ -25,4 +28,6 @@ public class FlinkProperties {
     private Long globalTimestamp = -1L;
     private String globalTimeZone;
     private String mode = RuntimeExecutionMode.STREAMING.name();
+    private String kafkaOffsets;
+//    private Map<TopicPartition, Long> kafkaOffsets;
 }

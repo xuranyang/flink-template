@@ -20,4 +20,5 @@ public class FlinkKafkaProperties {
     private String kafkaStrategy;
     private Long kafkaTimestamp = -1L;
     private String kafkaTimeZone;
+    private String kafkaOffsets;
 }

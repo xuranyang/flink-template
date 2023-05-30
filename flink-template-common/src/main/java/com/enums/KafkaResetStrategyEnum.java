@@ -6,7 +6,8 @@ public enum KafkaResetStrategyEnum {
     LATEST("latest"),
     EARLIEST("earliest"),
     OFFSET("offset"),
-    TIMESTAMP("timestamp");
+    TIMESTAMP("timestamp"),
+    SPECIAL("special");
 
     private String strategy;
 
