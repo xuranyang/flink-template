@@ -34,6 +34,7 @@ public class FlinkPropertiesTest {
 
         FlinkKafkaProperties flinkKafkaProperties = FlinkKafkaProperties.builder()
                 .kafkaStrategy("earliest")
+//                .kafkaStrategy("offset")
                 .kafkaGroupId("test-group")
                 .kafkaTopics("Data_Test_1")
                 .kafkaBrokers("kafka.brokers")

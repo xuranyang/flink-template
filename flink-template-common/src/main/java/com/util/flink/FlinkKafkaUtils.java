@@ -187,8 +187,10 @@ public class FlinkKafkaUtils {
             // 从最末尾位点开始消费
             kafkaSourceBuilder.setStartingOffsets(OffsetsInitializer.latest());
         } else if (KafkaResetStrategyEnum.OFFSET.getStrategy().equalsIgnoreCase(kafkaStrategy)) {
-            // 从消费组提交的位点开始消费，不指定位点重置策略
-            kafkaSourceBuilder.setStartingOffsets(OffsetsInitializer.committedOffsets());
+            // 从消费组提交的位点开始消费，不指定位点重置策略,如果提交位点不存在的话会直接报错,建议指定位点重置策略
+//            kafkaSourceBuilder.setStartingOffsets(OffsetsInitializer.committedOffsets());
+            // 从消费组提交的位点开始消费，如果提交位点不存在，使用最新位点
+            kafkaSourceBuilder.setStartingOffsets(OffsetsInitializer.committedOffsets(OffsetResetStrategy.LATEST));
             // 从消费组提交的位点开始消费，如果提交位点不存在，使用最早位点
 //            kafkaSourceBuilder.setStartingOffsets(OffsetsInitializer.committedOffsets(OffsetResetStrategy.EARLIEST));
         } else if (KafkaResetStrategyEnum.TIMESTAMP.getStrategy().equalsIgnoreCase(kafkaStrategy)) {
