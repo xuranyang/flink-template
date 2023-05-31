@@ -25,6 +25,22 @@ public class FlinkUtils {
         return env;
     }
 
+    public static StreamExecutionEnvironment createEnv(String[] args) throws Exception {
+        ParameterTool parameterTool = FlinkUtils.createParameterTool(args);
+        return createEnv(parameterTool);
+    }
+
+    public static StreamExecutionEnvironment createEnv(ParameterTool parameterTool) {
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        setEnvCheckpoint(env, parameterTool.getLong(PropertiesConstants.FLINK_START_PARAMETER_CHK, 500L));
+        env.getConfig().setGlobalJobParameters(parameterTool);
+        return env;
+    }
+
+    public static ParameterTool getEnvParameterTool(StreamExecutionEnvironment env) throws Exception {
+        return (ParameterTool) env.getConfig().getGlobalJobParameters();
+    }
+
     public static StreamExecutionEnvironment initStreamExecEnv() {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 

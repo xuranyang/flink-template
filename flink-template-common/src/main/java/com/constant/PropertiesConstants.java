@@ -18,4 +18,5 @@ public class PropertiesConstants {
     public static final String HBASE_CONNECT_POOL = "Pool";
     public static final long HBASE_WRITE_BUFFER_SIZE = 3 * 1024 * 1024;
 
+    public static final String FLINK_START_PARAMETER_CHK = "chk";
 }
