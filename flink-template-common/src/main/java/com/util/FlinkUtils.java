@@ -26,7 +26,8 @@ public class FlinkUtils {
     }
 
     public static StreamExecutionEnvironment createEnv(String[] args) throws Exception {
-        ParameterTool parameterTool = FlinkUtils.createParameterTool(args);
+//        ParameterTool parameterTool = FlinkUtils.createParameterTool(args);
+        ParameterTool parameterTool = FlinkUtils.getParameterTool(args);
         return createEnv(parameterTool);
     }
 
