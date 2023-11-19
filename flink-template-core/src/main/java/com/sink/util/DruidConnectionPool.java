@@ -16,7 +16,7 @@ public class DruidConnectionPool {
         props.put("driverClassName", "com.mysql.cj.jdbc.Driver");
         props.put("url", "jdbc:mysql://localhost:3306/test_db?serverTimezone=GMT&characterEncoding=utf8");
         props.put("username", "root");
-        props.put("password", "123456");
+        props.put("password", "root00");
         try {
             dataSource = DruidDataSourceFactory.createDataSource(props);
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.sink;
 
-import org.apache.flink.kafka.shaded.org.apache.kafka.clients.producer.ProducerConfig;
+//import org.apache.flink.kafka.shaded.org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
