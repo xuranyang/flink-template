@@ -6,12 +6,13 @@ import org.apache.flink.api.common.typeutils.base.VoidSerializer;
 import org.apache.flink.api.java.typeutils.runtime.kryo.KryoSerializer;
 import org.apache.flink.streaming.api.functions.sink.TwoPhaseCommitSinkFunction;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
+/**
+ * preCommit -> beginTransaction -> commit -> invoke
+ * preCommit -> beginTransaction -> commit -> invoke -> abort -> 从上一个Checkpoint重启 -> recoverAndCommit -> recoverAndAbort
+ */
 public class MySqlTwoPhaseCommitSink extends TwoPhaseCommitSinkFunction<List<String>,
         MySqlTwoPhaseCommitSink.ConnectionState, Void> {
 
@@ -22,10 +23,11 @@ public class MySqlTwoPhaseCommitSink extends TwoPhaseCommitSinkFunction<List<Str
                 VoidSerializer.INSTANCE);
     }
 
+    // 开始事务
     @Override
     protected ConnectionState beginTransaction() throws Exception {
         System.out.println("=====> beginTransaction... ");
-        //使用连接池，不使用单个连接
+        // 使用连接池，不使用单个连接
         //Class.forName("com.mysql.jdbc.Driver");
 //        Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test_db?characterEncoding=UTF-8", "root", "123456");
 
@@ -37,6 +39,7 @@ public class MySqlTwoPhaseCommitSink extends TwoPhaseCommitSinkFunction<List<Str
 
     @Override
     protected void invoke(ConnectionState transaction, List<String> sqlList, Context context) throws Exception {
+        System.out.println("=====> invoke... ");
         Connection connection = transaction.connection;
 
 //        PreparedStatement pstmt = connection.prepareStatement("insert into test_table(id,name,age) values(?, ?, ?)");
@@ -60,14 +63,14 @@ public class MySqlTwoPhaseCommitSink extends TwoPhaseCommitSinkFunction<List<Str
     }
 
 
-    // 先不做处理
+    // 预提交，提交前的操作，可以在这里执行一些检查或其他操作
     @Override
     protected void preCommit(ConnectionState transaction) throws Exception {
         System.out.println("=====> preCommit... ");
 //        System.out.println("=====> preCommit... " + transaction);
     }
 
-    //提交事务
+    // 提交事务
     @Override
     protected void commit(ConnectionState transaction) {
         System.out.println("=====> commit... ");
@@ -81,7 +84,7 @@ public class MySqlTwoPhaseCommitSink extends TwoPhaseCommitSinkFunction<List<Str
         }
     }
 
-    //回滚事务
+    // 回滚事务
     @Override
     protected void abort(ConnectionState transaction) {
         System.out.println("=====> abort... ");
@@ -95,7 +98,26 @@ public class MySqlTwoPhaseCommitSink extends TwoPhaseCommitSinkFunction<List<Str
         }
     }
 
-    //定义建立数据库连接的方法
+    /**
+     * 恢复并且commit事务
+     * 用户实现必须保证这个方法最终会成功。如果该方法失败，Flink应用会重启并且重新调用该方法
+     * @param transaction
+     */
+    @Override
+    protected void recoverAndCommit(ConnectionState transaction) {
+        System.out.println("=====> recoverAndCommit... ");
+    }
+
+    /**
+     * 恢复并且abort事务
+     * @param transaction
+     */
+    @Override
+    protected void recoverAndAbort(ConnectionState transaction) {
+        System.out.println("=====> recoverAndAbort... ");
+    }
+
+    // 定义建立数据库连接的方法
     public static class ConnectionState {
         private final transient Connection connection;
 
