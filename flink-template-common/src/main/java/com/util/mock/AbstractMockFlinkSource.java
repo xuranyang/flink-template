@@ -2,20 +2,18 @@ package com.util.mock;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
-import org.apache.flink.streaming.api.functions.source.SourceFunction;
 
 import java.util.concurrent.TimeUnit;
 
-public abstract class MockFlinkSource<T> extends RichSourceFunction<T> {
+public abstract class AbstractMockFlinkSource<T> extends RichSourceFunction<T> {
     private boolean isRun;
+    private final long sleepMs;
 
-    private long sleepMs;
-
-    public MockFlinkSource() {
+    public AbstractMockFlinkSource() {
         this.sleepMs = 0L;
     }
 
-    public MockFlinkSource(long sleepMs) {
+    public AbstractMockFlinkSource(long sleepMs) {
         this.sleepMs = sleepMs;
     }
 

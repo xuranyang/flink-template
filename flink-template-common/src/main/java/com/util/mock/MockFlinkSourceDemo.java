@@ -3,6 +3,7 @@ package com.util.mock;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.source.SourceFunction;
 
 /**
  * Mock造数据 Flink Source Demo
@@ -11,7 +12,7 @@ public class MockFlinkSourceDemo {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        MockFlinkSource<Integer> mockSource = new MockFlinkSource<Integer>(1000L) {
+        SourceFunction<Integer> mockSource = new AbstractMockFlinkSource<Integer>(1000L) {
             /**
              * 每间隔 1000ms 生产一条数据
              */
