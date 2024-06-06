@@ -8,6 +8,8 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        // channelActive:连接建立时的处理，发送请求消息给服务器
+        System.out.println("NettyClientHandler 执行 channelActive");
         // ChannelHandlerContext 用于传输业务数据
         String message = "Hello, server!";
         ByteBuf buffer = ctx.alloc().buffer(message.length());  // ByteBuf是一个存储字节的容器
@@ -17,6 +19,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println("NettyClientHandler 执行 channelRead");
         // 发送成功后，服务端接收到消息并返回处理结果时，ChannelHandler 的channelRead()方法能接收到服务端返回的响应结果消息
         ByteBuf buffer = (ByteBuf) msg;
         try {
@@ -32,6 +35,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        System.out.println("NettyServerHandler 执行 exceptionCaught");
         // 异常处理
         cause.printStackTrace();
         ctx.close();
