@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>flink-template-core</module>
-<!--        <module>flink-dynamic-cep</module>-->
+        <module>flink-dynamic-cep</module>
 <!--        <module>flink-template-cep</module>-->
     </modules>
 
