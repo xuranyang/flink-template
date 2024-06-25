@@ -33,6 +33,20 @@
 <!--            <scope>compile</scope>-->
         </dependency>
 
+        <!-- drools规则引擎 -->
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <version>7.6.0.Final</version>
+        </dependency>
+
+        <!-- groovy -->
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>4.0.21</version>
+        </dependency>
+
     </dependencies>
 
 </project>
