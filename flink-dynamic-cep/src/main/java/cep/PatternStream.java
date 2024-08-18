@@ -53,6 +53,7 @@ import org.apache.flink.util.OutputTag;
  * @param <T> Type of the events
  */
 public class PatternStream<T> {
+    // TODO 新增Flink动态CEP构造方法
     PatternStream(final DataStream<T> inputStream, DynamicPatternFunction<T> dynamicPatternFunction) throws Exception {
         this(PatternStreamBuilder.forStreamAndPatternFunction(inputStream, dynamicPatternFunction));
     }

@@ -151,10 +151,11 @@ public class CepOperator<IN, KEY, OUT>
 
     private transient Counter numLateRecordsDropped;
 
+    // TODO 新增Flink动态CEP构造方法
     public CepOperator(
             final TypeSerializer<IN> inputSerializer,
             final boolean isProcessingTime,
-            final DynamicPatternFunction patternFunction,
+            final DynamicPatternFunction<IN> patternFunction,
             @Nullable final EventComparator<IN> comparator,
             @Nullable final AfterMatchSkipStrategy afterMatchSkipStrategy,
             final PatternProcessFunction<IN, OUT> function,
@@ -302,6 +303,7 @@ public class CepOperator<IN, KEY, OUT>
         this.numLateRecordsDropped = metrics.counter(LATE_ELEMENTS_DROPPED_METRIC_NAME);
     }
 
+    // 监听回调方法
     private void onProcessingTime(long time) throws Exception {
         //先检查是否变更
         if (patternFunction.isChanged()) {
@@ -309,15 +311,16 @@ public class CepOperator<IN, KEY, OUT>
             Pattern pattern = patternFunction.inject();
             afterMatchSkipStrategy = pattern.getAfterMatchSkipStrategy();
             boolean timeoutHandling = getUserFunction() instanceof TimedOutPartialMatchHandler;
+            // 重新生成NFA
             nfaFactory = NFACompiler.compileFactory(pattern, timeoutHandling);
 
             nfa = nfaFactory.createNFA();
             nfa.open(cepRuntimeContext, new Configuration());
 
-            //刷新版本号
+            // 刷新版本号
             refreshVersion.incrementAndGet();
         }
-        //重新注册
+        // 重新注册监听器
         if (patternFunction.getPeriod() > 0) {
             getProcessingTimeService().registerTimer(timerService.currentProcessingTime() + patternFunction.getPeriod(), this::onProcessingTime);
 //            getProcessingTimeService().registerTimer(timerService.currentWatermark() + patternFunction.getPeriod(), this::onProcessingTime);

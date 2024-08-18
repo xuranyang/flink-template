@@ -53,7 +53,8 @@ final class PatternStreamBuilder<IN> {
 
     private final Pattern<IN, ?> pattern;
 
-    private final DynamicPatternFunction patternFunction;
+    // TODO Flink动态CEP
+    private final DynamicPatternFunction<IN> patternFunction;
 
     private final EventComparator<IN> comparator;
 
@@ -92,9 +93,10 @@ final class PatternStreamBuilder<IN> {
         this.patternFunction = null;
     }
 
+    // TODO 新增Flink动态CEP构造方法
     private PatternStreamBuilder(
             final DataStream<IN> inputStream,
-            final DynamicPatternFunction patternFunction,
+            final DynamicPatternFunction<IN> patternFunction,
             final TimeBehaviour timeBehaviour,
             @Nullable final EventComparator<IN> comparator,
             @Nullable final OutputTag<IN> lateDataOutputTag) {
@@ -177,6 +179,8 @@ final class PatternStreamBuilder<IN> {
                     processFunction,
                     lateDataOutputTag);
         } else {
+            // TODO Flink动态CEP
+            // 当外部接口方法不为空时,构造自定义的CepOperator
             operator = new CepOperator<>(
                     inputSerializer,
                     isProcessingTime,
@@ -214,8 +218,9 @@ final class PatternStreamBuilder<IN> {
                 inputStream, pattern, TimeBehaviour.EventTime, null, null);
     }
 
+    // TODO 新增Flink动态CEP方法
     static <IN> PatternStreamBuilder<IN> forStreamAndPatternFunction(
-            final DataStream<IN> inputStream, final DynamicPatternFunction patternFunction) {
+            final DataStream<IN> inputStream, final DynamicPatternFunction<IN> patternFunction) {
         return new PatternStreamBuilder<>(
                 inputStream, patternFunction, TimeBehaviour.EventTime, null, null);
     }

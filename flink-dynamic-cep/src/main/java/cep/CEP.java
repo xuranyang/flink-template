@@ -36,6 +36,7 @@ public class CEP {
      * @return
      * @param <T>
      */
+    // TODO 新增动态CEP方法
     public static <T> PatternStream<T> injectionPattern(
             DataStream<T> input,
             DynamicPatternFunction<T> dynamicPatternFunction) throws Exception {
