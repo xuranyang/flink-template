@@ -101,6 +101,7 @@ public class TestDynamicRuleEngine {
                 if (kieBuilder.getResults().hasMessages(Message.Level.ERROR)) {
                     throw new RuntimeException("规则编译错误: " + kieBuilder.getResults().getMessages());
                 }
+//                return kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
                 return kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());
             }
         }).name("Dynamic Rule Processor").print();
